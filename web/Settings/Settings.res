@@ -6,6 +6,8 @@ let make = () => {
   <Window title="Settings" maximize=false>
     <div className="settings">
       {React.string("Settings")}
+      <Slider />
+      <Slider />
     </div>
   </Window>
 }

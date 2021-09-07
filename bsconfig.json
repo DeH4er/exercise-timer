@@ -1,5 +1,5 @@
 {
-  "name": "shared",
+  "name": "exercise-timer",
   "sources": [
     {
       "dir": "web",

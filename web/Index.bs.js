@@ -7,6 +7,9 @@ import * as ReactDom from "react-dom";
 import IndexCss from "./css/index.css";
 import ColorsCss from "./css/colors.css";
 
+import "rc-slider/assets/index.css";
+;
+
 var styles = IndexCss;
 
 var root = document.querySelector("#root");

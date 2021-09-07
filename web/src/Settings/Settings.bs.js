@@ -10,7 +10,19 @@ function Settings(Props) {
               title: "Settings",
               children: React.createElement("div", {
                     className: "settings"
-                  }, "Settings", React.createElement(Slider$Web.make, {}), React.createElement(Slider$Web.make, {})),
+                  }, React.createElement("section", {
+                        className: "settings__section"
+                      }, React.createElement("h3", undefined, "Break interval"), React.createElement("div", {
+                            className: "settings__slider"
+                          }, React.createElement(Slider$Web.make, {})), React.createElement("p", {
+                            className: "settings__detail"
+                          }, "2 hours 30 minutes")), React.createElement("section", {
+                        className: "settings__section"
+                      }, React.createElement("h3", undefined, "Break duration"), React.createElement("div", {
+                            className: "settings__slider"
+                          }, React.createElement(Slider$Web.make, {})), React.createElement("p", {
+                            className: "settings__detail"
+                          }, "30 minutes"))),
               maximize: false
             });
 }

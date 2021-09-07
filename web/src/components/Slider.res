@@ -7,4 +7,5 @@ external make: (
   ~onChange: float => unit=?,
   ~min: float=?,
   ~max: float=?,
+  ~step: float=?,
 ) => React.element = "default"

@@ -24,15 +24,15 @@
   align-items: center;
 }
 
-.theme1 .titlebar {
-  background: var(--theme1-gray3);
+.theme-dark .titlebar {
+  background: var(--theme-dark-gray3);
 }
 
-.theme1 .titlebar__action:hover {
-  background: var(--theme1-gray4);
+.theme-dark .titlebar__action:hover {
+  background: var(--theme-dark-gray4);
   cursor: pointer;
 }
 
-.theme1 .titlebar__action:active {
-  background: var(--theme1-accent);
+.theme-dark .titlebar__action:active {
+  background: var(--theme-dark-accent);
 }

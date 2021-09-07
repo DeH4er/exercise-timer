@@ -5,10 +5,6 @@ import * as App$Web from "./App/App.bs.js";
 import * as Theme$Web from "./Theme/Theme.bs.js";
 import * as ReactDom from "react-dom";
 import IndexCss from "./css/index.css";
-import ColorsCss from "./css/colors.css";
-
-import "rc-slider/assets/index.css";
-;
 
 var styles = IndexCss;
 
@@ -26,4 +22,4 @@ export {
   styles ,
   
 }
-/*  Not a pure module */
+/* styles Not a pure module */

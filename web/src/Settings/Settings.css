@@ -1,3 +1,23 @@
 .settings {
-  padding: 10px;
+  padding: 1rem;
+}
+
+.settings__section {
+  margin-bottom: 2rem;
+}
+
+.settings__section:last-child {
+  margin-bottom: 0;
+}
+
+.settings__detail {
+  font-size: 10pt;
+}
+
+.settings__slider {
+  margin-bottom: 0.5rem;
+}
+
+.theme-dark .settings__detail {
+  color: var(--theme-light-gray1);
 }

@@ -1,9 +1,7 @@
-let themes = ["theme1"]
+let themes = ["dark"]
 let theme = themes[0]
 
 @react.component
 let make = (~children: React.element) => {
-  <div className={theme}>
-    {children}
-  </div>
+  <div className={`theme-${theme}`}> {children} </div>
 }

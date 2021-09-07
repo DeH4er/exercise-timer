@@ -3,14 +3,14 @@
 import * as React from "react";
 import * as Caml_array from "rescript/lib/es6/caml_array.js";
 
-var themes = ["theme1"];
+var themes = ["dark"];
 
 var theme = Caml_array.get(themes, 0);
 
 function Theme(Props) {
   var children = Props.children;
   return React.createElement("div", {
-              className: theme
+              className: "theme-" + theme
             }, children);
 }
 

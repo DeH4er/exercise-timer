@@ -8,7 +8,7 @@
   flex: 1;
 }
 
-.theme1 .window {
-  background: var(--theme1-gray1);
+.theme-dark .window {
+  background: var(--theme-dark-gray1);
   color: #fff;
 }

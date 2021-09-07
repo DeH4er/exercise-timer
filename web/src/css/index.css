@@ -1,14 +1,37 @@
+@import 'modern-normalize/modern-normalize.css';
+@import 'rc-slider/assets/index.css';
+
+@import './colors.css';
+
 body {
-  margin: 0;
   background: #000;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-weight: lighter;
+}
+
+/* body {
+  margin: 0;
+  font-weight: lighter;
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Roboto",
+    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+} */
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: lighter;
+  margin: 0;
+}
+
+h1, h2, h3 {
+  margin-bottom: 1rem;
+}
+
+p {
+  margin: 0;
 }

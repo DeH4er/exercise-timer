@@ -1,0 +1,38 @@
+.titlebar {
+  height: 32px;
+  display: flex;
+  user-select:  none;
+  font-size: 10pt;
+}
+
+.titlebar__title {
+  -webkit-app-region: drag;
+  flex: 1;
+  line-height: 32px;
+  margin-left: 10px;
+}
+
+.titlebar__actions {
+  display: flex;
+}
+
+.titlebar__action {
+  width: 42px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.theme1 .titlebar {
+  background: var(--theme1-gray3);
+}
+
+.theme1 .titlebar__action:hover {
+  background: var(--theme1-gray4);
+  cursor: pointer;
+}
+
+.theme1 .titlebar__action:active {
+  background: var(--theme1-accent);
+}

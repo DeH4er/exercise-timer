@@ -1,0 +1,14 @@
+.window {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.window__content {
+  flex: 1;
+}
+
+.theme1 .window {
+  background: var(--theme1-gray1);
+  color: #fff;
+}

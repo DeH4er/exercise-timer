@@ -1,0 +1,76 @@
+{
+  "name": "exercise-timer",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "build/desktop.js",
+  "scripts": {
+    "start": "electron .",
+    "compile": "rescript build -w",
+    "dist": "electron-builder build",
+    "build": "concurrently --kill-others \"npm:desktop:build\" \"npm:web:build\"",
+    "build-watch": "concurrently --kill-others \"npm:web:build-watch\" \"npm:desktop:build-watch\"",
+    "web:build-watch": "cross-env NODE_ENV=development webpack serve --hot --config webpack-web.config.js",
+    "web:build": "cross-env NODE_ENV=production webpack --config webpack-web.config.js",
+    "desktop:build-watch": "cross-env NODE_ENV=development webpack -w --config webpack-desktop.config.js",
+    "desktop:build": "cross-env NODE_ENV=production webpack --config webpack-desktop.config.js"
+  },
+  "build": {
+    "appId": "github.deh4er.exercise-timer",
+    "extends": null,
+    "extraResources": [
+      {
+        "from": "resources/img",
+        "to": "img"
+      },
+      {
+        "from": "resources/scripts",
+        "to": "scripts"
+      },
+      {
+        "from": "build/web",
+        "to": "web"
+      }
+    ],
+    "files": [
+      "./build/desktop.js"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "resources/img/icon.png"
+    }
+  },
+  "dependencies": {
+    "@rescript/react": "^0.10.3",
+    "@ryyppy/rescript-promise": "^2.1.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-feather": "^2.0.9"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.15.5",
+    "@babel/preset-env": "^7.15.4",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.0-rc.6",
+    "babel-loader": "^8.2.2",
+    "concurrently": "^6.2.1",
+    "cross-env": "^7.0.3",
+    "css-loader": "^6.2.0",
+    "electron": "^14.0.0",
+    "electron-builder": "^22.11.7",
+    "html-webpack-plugin": "^5.3.2",
+    "react-refresh": "^0.10.0",
+    "rescript": "^9.1.4",
+    "style-loader": "^3.2.1",
+    "webpack": "^5.52.0",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.1.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "workspaces": [
+    "shared",
+    "desktop",
+    "web"
+  ]
+}

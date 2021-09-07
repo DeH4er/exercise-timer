@@ -1,0 +1,24 @@
+{
+  "name": "shared",
+  "sources": [
+    {
+      "dir": "web",
+      "subdirs": true
+    },
+    {
+      "dir": "desktop",
+      "subdirs": true
+    }
+  ],
+  "package-specs": [
+    {
+      "module": "es6",
+      "in-source": true
+    }
+  ],
+  "suffix": ".bs.js",
+  "reason": {
+    "react-jsx": 3
+  },
+  "bs-dependencies": ["@ryyppy/rescript-promise", "@rescript/react"]
+}

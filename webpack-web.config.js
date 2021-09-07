@@ -5,7 +5,7 @@ const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin"
 const isDevelopment = process.env.NODE_ENV === "development";
 
 module.exports = {
-  entry: [path.resolve(__dirname, "web", "index.js")],
+  entry: [path.resolve(__dirname, "web", "Index.bs.js")],
   mode: isDevelopment ? "development" : "production",
   devServer: {
     hot: true,

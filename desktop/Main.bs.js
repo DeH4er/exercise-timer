@@ -8,6 +8,8 @@ import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as DesktopPaths from "./DesktopPaths.bs.js";
 import * as DesktopCommand from "./DesktopCommand.bs.js";
+import * as ElectronDevtoolsInstaller from "electron-devtools-installer";
+import ElectronDevtoolsInstaller$1 from "electron-devtools-installer";
 
 var appState = {
   tray: undefined,
@@ -63,6 +65,9 @@ DesktopCommand.onCommand(function ($$event, command) {
     });
 
 Electron$1.app.whenReady().then(function (param) {
+      if (!Electron$1.app.isPackaged) {
+        ElectronDevtoolsInstaller$1(ElectronDevtoolsInstaller.REACT_DEVELOPER_TOOLS);
+      }
       var iconPath = Path.join(DesktopPaths.imgPath, "icon.png");
       var createdTray = new Electron$1.Tray(iconPath);
       appState.tray = Caml_option.some(createdTray);

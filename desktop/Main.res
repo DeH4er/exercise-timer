@@ -72,6 +72,10 @@ DesktopCommand.onCommand((event, command) => {
 
 App.whenReady()
 ->then(() => {
+  if !App.isPackaged {
+    ElectronDevtoolsInstaller.reactDevtools->ElectronDevtoolsInstaller.installExtension->ignore
+  }
+
   let iconPath = Node.Path.join([DesktopPaths.imgPath, "icon.png"])
   let createdTray = Tray.create(iconPath)
   appState.tray = Some(createdTray)

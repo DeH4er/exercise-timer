@@ -1,0 +1,13 @@
+{
+  "name": "shared",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "compile": "rescript build -w"
+  },
+  "devDependencies": {
+    "rescript": "^9.1.4"
+  },
+  "author": "",
+  "license": "ISC"
+}

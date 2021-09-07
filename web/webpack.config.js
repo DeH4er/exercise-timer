@@ -5,7 +5,7 @@ const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin"
 const isDevelopment = process.env.NODE_ENV === "development";
 
 module.exports = {
-  entry: [path.resolve(__dirname, "web", "Index.bs.js")],
+  entry: path.resolve(__dirname, "src", "Index.bs.js"),
   mode: isDevelopment ? "development" : "production",
   devServer: {
     hot: true,
@@ -13,12 +13,12 @@ module.exports = {
     historyApiFallback: true,
   },
   output: {
-    path: path.resolve(__dirname, "build", "web"),
+    path: path.resolve(__dirname, "..", "build", "web"),
     filename: "web.js",
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, "resources", "index.html"),
+      template: path.resolve(__dirname, "public", "index.html"),
     }),
     isDevelopment && new ReactRefreshWebpackPlugin(),
   ].filter(Boolean),
@@ -30,7 +30,7 @@ module.exports = {
       },
       {
         test: /\.(jsx|js)$/,
-        include: path.resolve(__dirname, "web"),
+        include: path.resolve(__dirname, "src"),
         exclude: /node_modules/,
         use: [
           {

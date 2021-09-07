@@ -3,14 +3,14 @@ const path = require("path");
 const { env } = process;
 
 module.exports = {
-  entry: "./desktop/Main.bs.js",
+  entry: "./src/Main.bs.js",
   target: "electron-main",
   optimization: {
     minimize: env.NODE_ENV === 'production',
   },
   output: {
     filename: "desktop.js",
-    path: path.resolve(__dirname, "build"),
+    path: path.resolve(__dirname, "..", "build"),
   },
   node: {
     __dirname: false,

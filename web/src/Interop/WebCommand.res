@@ -17,12 +17,12 @@ let on: (string, (string, array<string>) => unit) => unit = (channel, listener) 
   })
 }
 
-let onCommand: (Command.t => unit) => unit = listener => {
+let onCommand: (Shared.Command.t => unit) => unit = listener => {
   on("main", (_, args) => {
-    args->Command.decodeCommand->Belt.Option.map(listener)->ignore
+    args->Shared.Command.decodeCommand->Belt.Option.map(listener)->ignore
   })
 }
 
-let sendCommand: Command.t => unit = command => {
-  command->Command.encodeCommand->(parts => send(ipcRenderer, "main", parts))
+let sendCommand: Shared.Command.t => unit = command => {
+  command->Shared.Command.encodeCommand->(parts => send(ipcRenderer, "main", parts))
 }

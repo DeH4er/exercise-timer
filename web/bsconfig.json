@@ -1,12 +1,9 @@
 {
-  "name": "exercise-timer",
+  "name": "web",
+  "namespace": true,
   "sources": [
     {
-      "dir": "web",
-      "subdirs": true
-    },
-    {
-      "dir": "desktop",
+      "dir": "src",
       "subdirs": true
     }
   ],
@@ -20,5 +17,6 @@
   "reason": {
     "react-jsx": 3
   },
-  "bs-dependencies": ["@ryyppy/rescript-promise", "@rescript/react"]
+  "pinned-dependencies": ["shared"],
+  "bs-dependencies": ["@ryyppy/rescript-promise", "@rescript/react", "shared"]
 }

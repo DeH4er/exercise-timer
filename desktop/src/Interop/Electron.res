@@ -91,7 +91,7 @@ module IpcMain = {
 
   let on = (. channel, listener) => {
     _on(.channel, () => {
-      let args = Utils.arguments
+      let args = Shared.Utils.arguments
       listener(args[0], args->Belt.Array.slice(~offset=1, ~len=Belt.Array.length(args)))
     })
   }

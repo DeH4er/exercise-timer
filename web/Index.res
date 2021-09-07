@@ -1,7 +1,7 @@
-@module("./index.css")
+@module("./css/colors.css")
 external styles: {..} = "default"
 
-@module("./colors.css")
+@module("./css/index.css")
 external styles: {..} = "default"
 
 switch ReactDOM.querySelector("#root") {

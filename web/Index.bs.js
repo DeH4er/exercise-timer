@@ -4,10 +4,10 @@ import * as App from "./App/App.bs.js";
 import * as Theme from "./Theme/Theme.bs.js";
 import * as React from "react";
 import * as ReactDom from "react-dom";
-import IndexCss from "./index.css";
-import ColorsCss from "./colors.css";
+import IndexCss from "./css/index.css";
+import ColorsCss from "./css/colors.css";
 
-var styles = ColorsCss;
+var styles = IndexCss;
 
 var root = document.querySelector("#root");
 

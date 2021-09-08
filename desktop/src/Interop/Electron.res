@@ -1,7 +1,7 @@
 module App = {
   @module("electron") @scope("app")
   external isPackaged: bool = "isPackaged"
-  
+
   @module("electron") @scope("app")
   external whenReady: unit => Promise.t<unit> = "whenReady"
 
@@ -16,7 +16,7 @@ module WebContents = {
   external on: (t, string, unit => unit) => unit = "on"
 
   @send @variadic
-  external send: (t, array<string>) => unit = "send"
+  external send: (t, string, array<string>) => unit = "send"
 
   @send
   external openDevTools: t => unit = "openDevTools"
@@ -52,8 +52,13 @@ module BrowserWindow = {
     ~width: int,
     ~height: int,
     unit,
-  ) => t = (~frame=?, ~webPreferences=?, ~width: int, ~height: int, ()) =>
-    _create({width: width, height: height, frame: frame, webPreferences: webPreferences})
+  ) => t = (~frame=?, ~webPreferences=?, ~width, ~height, ()) =>
+    _create({
+      width: width,
+      height: height,
+      frame: frame,
+      webPreferences: webPreferences,
+    })
 
   @module("electron") @scope("BrowserWindow")
   external fromWebContents: WebContents.t => t = "fromWebContents"
@@ -82,9 +87,10 @@ module Tray = {
 }
 
 module IpcMain = {
-  type event = {
-    sender: WebContents.t
-  }
+  type event = {sender: WebContents.t}
+
+  @send @variadic
+  external reply: (event, string, array<string>) => unit = "reply"
 
   @module("electron") @scope("ipcMain")
   external _on: 'a = "on"

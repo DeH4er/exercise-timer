@@ -1,24 +1,16 @@
 open Promise
 open Electron
 
-type settings = {
-  breakDuration: int,
-  breakInterval: int,
-}
-
 type appState = {
   mutable tray: option<Tray.t>,
   mutable settingsWindow: option<BrowserWindow.t>,
-  settings: settings,
+  mutable settings: option<Shared.Settings.t>,
 }
 
 let appState = {
   tray: None,
   settingsWindow: None,
-  settings: {
-    breakDuration: 0,
-    breakInterval: 0,
-  },
+  settings: None,
 }
 
 let createWindow = (~width: int, ~height: int, ~startupUrl: string, ()) => {
@@ -27,32 +19,61 @@ let createWindow = (~width: int, ~height: int, ~startupUrl: string, ()) => {
     ~height,
     ~frame=false,
     ~webPreferences={
-      preload: Some(Node.Path.join([DesktopPaths.scriptsPath, "windowPreload.js"])),
+      preload: Some(Node.Path.join([Paths.scriptsPath, "windowPreload.js"])),
     },
     (),
   )
-  let url = `${DesktopPaths.webPath}#${startupUrl}`
+  let url = `${Paths.webPath}#${startupUrl}`
   window->BrowserWindow.loadURL(url)
 
-  if !Electron.App.isPackaged {
+  if !App.isPackaged {
     window.webContents->WebContents.openDevTools
   }
 
   window
 }
 
+let loadSettings = () => {
+  Settings.load()->then(res => {
+    let settings = switch res {
+    | Ok(settings) => settings
+    | Error(err) => {
+        Js.log(err)
+        Shared.Settings.defaultSettings
+      }
+    }
+    appState.settings = Some(settings)
+    resolve()
+  })
+}
+
 let exit = App.quit
+
 let openSettings = () => {
   switch appState.settingsWindow {
   | None => {
-      let window = createWindow(~width=800, ~height=400, ~startupUrl="settings", ())
+      let window = createWindow(~width=400, ~height=250, ~startupUrl="settings", ())
       appState.settingsWindow = Some(window)
     }
   | _ => ()
   }
 }
 
-DesktopCommand.onCommand((event, command) => {
+let createTray = () => {
+  let iconPath = Node.Path.join([Paths.imgPath, "icon.png"])
+  let createdTray = Tray.create(iconPath)
+  appState.tray = Some(createdTray)
+  let menu = Menu.create([{label: "Settings", click: openSettings}, {label: "Exit", click: exit}])
+  Tray.setContextMenu(createdTray, menu)
+}
+
+let installDevTools = () => {
+  if !App.isPackaged {
+    ElectronDevtoolsInstaller.reactDevtools->ElectronDevtoolsInstaller.installExtension->ignore
+  }
+}
+
+Command.on((event, command) => {
   let window = event.sender->BrowserWindow.fromWebContents
 
   switch command {
@@ -67,20 +88,23 @@ DesktopCommand.onCommand((event, command) => {
     })
     ->ignore
   | MinimizeWindow => window->BrowserWindow.minimize
+  | GetSettings => appState.settings -> Belt.Option.map(settings => event->Command.reply(settings->ReturnSettings)) -> ignore
+  | SetBreakDuration(breakDuration) => appState.settings -> Belt.Option.map(settings => {
+      appState.settings = {...settings, breakDuration}->Some
+    }) -> ignore
+  | SetBreakInterval(breakInterval) => appState.settings -> Belt.Option.map(settings => {
+      appState.settings = {...settings, breakInterval}->Some
+    }) -> ignore
+  | ReturnSettings(_) => ()
   }
 })
 
 App.whenReady()
 ->then(() => {
-  if !App.isPackaged {
-    ElectronDevtoolsInstaller.reactDevtools->ElectronDevtoolsInstaller.installExtension->ignore
-  }
-
-  let iconPath = Node.Path.join([DesktopPaths.imgPath, "icon.png"])
-  let createdTray = Tray.create(iconPath)
-  appState.tray = Some(createdTray)
-  let menu = Menu.create([{label: "Settings", click: openSettings}, {label: "Exit", click: exit}])
-  Tray.setContextMenu(createdTray, menu)
-  resolve()
+  installDevTools()
+  loadSettings()->then(() => {
+    createTray()
+    resolve()
+  })
 })
 ->ignore

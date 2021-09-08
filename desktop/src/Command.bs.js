@@ -6,7 +6,7 @@ import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as Command$Shared from "shared/src/Command.bs.js";
 import * as Caml_splice_call from "rescript/lib/es6/caml_splice_call.js";
 
-function onCommand(listener) {
+function on(listener) {
   return Electron.IpcMain.on("main", (function ($$event, args) {
                 return Belt_Option.map(Command$Shared.decodeCommand(args), (function (cmd) {
                               return Curry._2(listener, $$event, cmd);
@@ -14,14 +14,26 @@ function onCommand(listener) {
               }));
 }
 
-function sendCommand(command, webContents) {
-  Caml_splice_call.spliceObjApply(webContents, "send", [Command$Shared.encodeCommand(command)]);
+function send(command, webContents) {
+  Caml_splice_call.spliceObjApply(webContents, "send", [
+        "main",
+        Command$Shared.encodeCommand(command)
+      ]);
+  
+}
+
+function reply($$event, command) {
+  Caml_splice_call.spliceObjApply($$event, "reply", [
+        "main",
+        Command$Shared.encodeCommand(command)
+      ]);
   
 }
 
 export {
-  onCommand ,
-  sendCommand ,
+  on ,
+  send ,
+  reply ,
   
 }
 /* Electron Not a pure module */

@@ -2,25 +2,83 @@
 
 
 function decodeCommand(args) {
-  if (args.length !== 1) {
+  var len = args.length;
+  if (len >= 3) {
     return ;
   }
-  var match = args[0];
-  switch (match) {
-    case "closeWindow" :
-        return /* CloseWindow */0;
-    case "minimizeWindow" :
-        return /* MinimizeWindow */1;
-    default:
-      return ;
+  switch (len) {
+    case 0 :
+        return ;
+    case 1 :
+        var match = args[0];
+        switch (match) {
+          case "CloseWindow" :
+              return /* CloseWindow */0;
+          case "GetSettings" :
+              return /* GetSettings */2;
+          case "MinimizeWindow" :
+              return /* MinimizeWindow */1;
+          default:
+            return ;
+        }
+    case 2 :
+        var match$1 = args[0];
+        switch (match$1) {
+          case "ReturnSettings" :
+              var payload = args[1];
+              return {
+                      TAG: /* ReturnSettings */0,
+                      _0: JSON.parse(payload)
+                    };
+          case "SetBreakDuration" :
+              var payload$1 = args[1];
+              return {
+                      TAG: /* SetBreakDuration */1,
+                      _0: JSON.parse(payload$1)
+                    };
+          case "SetBreakInterval" :
+              var payload$2 = args[1];
+              return {
+                      TAG: /* SetBreakInterval */2,
+                      _0: JSON.parse(payload$2)
+                    };
+          default:
+            return ;
+        }
+    
   }
 }
 
 function encodeCommand(command) {
-  if (command) {
-    return ["minimizeWindow"];
+  if (typeof command === "number") {
+    switch (command) {
+      case /* CloseWindow */0 :
+          return ["CloseWindow"];
+      case /* MinimizeWindow */1 :
+          return ["MinimizeWindow"];
+      case /* GetSettings */2 :
+          return ["GetSettings"];
+      
+    }
   } else {
-    return ["closeWindow"];
+    switch (command.TAG | 0) {
+      case /* ReturnSettings */0 :
+          return [
+                  "ReturnSettings",
+                  JSON.stringify(command._0)
+                ];
+      case /* SetBreakDuration */1 :
+          return [
+                  "SetBreakDuration",
+                  JSON.stringify(command._0)
+                ];
+      case /* SetBreakInterval */2 :
+          return [
+                  "SetBreakInterval",
+                  JSON.stringify(command._0)
+                ];
+      
+    }
   }
 }
 

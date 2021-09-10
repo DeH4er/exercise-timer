@@ -26,6 +26,7 @@ yarn-error.log*
 /desktop/lib
 /web/lib
 /shared/lib
+/scripts/lib
 
 .bsb.lock
 .merlin

@@ -16,7 +16,9 @@
     "shared:compile": "npm run compile --workspace=shared",
     "desktop:compile": "npm run compile --workspace=desktop",
     "desktop:build-watch": "npm run build-watch --workspace=desktop",
-    "desktop:build": "npm run build --workspace=desktop"
+    "desktop:build": "npm run build --workspace=desktop",
+    "scripts:compile": "npm run compile --workspace scripts",
+    "scripts:gen-icons": "npm run gen-icons --workspace scripts"
   },
   "build": {
     "appId": "github.deh4er.exercise-timer",
@@ -53,6 +55,7 @@
   "workspaces": [
     "shared",
     "desktop",
-    "web"
+    "web",
+    "scripts"
   ]
 }

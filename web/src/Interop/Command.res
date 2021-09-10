@@ -1,11 +1,13 @@
+type ipcRenderer
+
 @val @scope("electron")
-external ipcRenderer: 'a = "ipcRenderer"
+external ipcRenderer: ipcRenderer = "ipcRenderer"
 
 @send
-external _on: ('a, string, 'b) => unit = "on"
+external _on: (ipcRenderer, string, 'a) => unit = "on"
 
 @send @variadic
-external send: ('a, string, array<string>) => unit = "send"
+external send: (ipcRenderer, string, array<string>) => unit = "send"
 
 @val
 external arguments: array<'a> = "arguments"

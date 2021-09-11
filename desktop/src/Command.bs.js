@@ -8,9 +8,10 @@ import * as Caml_splice_call from "rescript/lib/es6/caml_splice_call.js";
 
 function on(listener) {
   return Electron.IpcMain.on("main", (function ($$event, args) {
-                return Belt_Option.map(Command$Shared.decodeCommand(args), (function (cmd) {
-                              return Curry._2(listener, $$event, cmd);
-                            }));
+                Belt_Option.map(Command$Shared.decodeCommand(args), (function (cmd) {
+                        return Curry._2(listener, $$event, cmd);
+                      }));
+                
               }));
 }
 

@@ -93,12 +93,9 @@ module IpcMain = {
   external reply: (event, string, array<string>) => unit = "reply"
 
   @module("electron") @scope("ipcMain")
-  external _on: 'a = "on"
+  external _on: (string, Js.Fn.arity0<'a>) => unit = "on"
 
-  let on = (. channel, listener) => {
-    _on(.channel, () => {
-      let args = Shared.Utils.arguments
-      listener(args[0], args->Belt.Array.slice(~offset=1, ~len=Belt.Array.length(args)))
-    })
+  let on: (string, (event, array<string>) => unit) => unit = (channel, listener) => {
+    _on(channel, Shared.Utils.rest2(listener))
   }
 }

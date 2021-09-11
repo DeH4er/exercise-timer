@@ -1,6 +1,6 @@
 let on: ((Electron.IpcMain.event, Shared.Command.t) => unit) => unit = listener => {
-  Electron.IpcMain.on(."main", (event, args) => {
-    args->Shared.Command.decodeCommand->Belt.Option.map(cmd => listener(event, cmd))
+  Electron.IpcMain.on("main", (event, args) => {
+    args->Shared.Command.decodeCommand->Belt.Option.map(cmd => listener(event, cmd))->ignore
   })
 }
 

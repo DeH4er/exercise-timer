@@ -9,6 +9,6 @@
 }
 
 .theme-dark .window {
-  background: var(--theme-dark-gray1);
+  background: var(--theme-dark--gray1);
   color: #fff;
 }

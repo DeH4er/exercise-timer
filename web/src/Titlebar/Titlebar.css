@@ -25,14 +25,14 @@
 }
 
 .theme-dark .titlebar {
-  background: var(--theme-dark-gray3);
+  background: var(--theme-dark--gray3);
 }
 
 .theme-dark .titlebar__action:hover {
-  background: var(--theme-dark-gray4);
+  background: var(--theme-dark--gray4);
   cursor: pointer;
 }
 
 .theme-dark .titlebar__action:active {
-  background: var(--theme-dark-accent);
+  background: var(--theme-dark--accent);
 }

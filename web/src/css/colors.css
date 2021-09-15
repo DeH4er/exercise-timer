@@ -1,10 +1,10 @@
 :root {
-  --theme-dark-gray1: #1e1e1e;
-  --theme-dark-gray2: #252526;
-  --theme-dark-gray3: #2d2d30;
-  --theme-dark-gray4: #3e3e42;
-  --theme-dark-gray5: #4c4c54;
-  --theme-dark-gray6: #5d5d68;
-  --theme-light-gray1: #adadac;
-  --theme-dark-accent: #007acc;
+  --theme-dark--gray1: #1e1e1e;
+  --theme-dark--gray2: #252526;
+  --theme-dark--gray3: #2d2d30;
+  --theme-dark--gray4: #3e3e42;
+  --theme-dark--gray5: #4c4c54;
+  --theme-dark--gray6: #5d5d68;
+  --theme-dark--light-gray1: #adadac;
+  --theme-dark--accent: #007acc;
 }

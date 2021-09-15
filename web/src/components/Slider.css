@@ -1,5 +1,5 @@
 .theme-dark .rc-slider .rc-slider-rail {
-  background-color: var(--theme-dark-gray4);
+  background-color: var(--theme-dark--gray4);
 }
 
 .theme-dark .rc-slider .rc-slider-track {
@@ -7,11 +7,11 @@
 }
 
 .theme-dark .rc-slider .rc-slider-handle {
-  background-color: var(--theme-dark-gray6);
+  background-color: var(--theme-dark--gray6);
   border: none;
 }
 
 .theme-dark .rc-slider .rc-slider-handle:active {
-  background-color: var(--theme-dark-accent);
+  background-color: var(--theme-dark--accent);
   box-shadow: none;
 }

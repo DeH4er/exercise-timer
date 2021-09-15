@@ -38,7 +38,7 @@ function loadSettings(param) {
                 settings = res._0;
               } else {
                 console.log(res._0);
-                settings = Settings$Shared.defaultSettings;
+                settings = Settings$Shared.$$default;
               }
               appState.settings = settings;
               return Promise.resolve(undefined);
@@ -105,10 +105,10 @@ Command.on(function ($$event, command) {
               return ;
           case /* GetSettings */2 :
               Belt_Option.map(appState.settings, (function (settings) {
-                      return Command.reply($$event, {
+                      return Command.send({
                                   TAG: /* ReturnSettings */0,
                                   _0: settings
-                                });
+                                }, $$event.sender);
                     }));
               return ;
           
@@ -157,6 +157,10 @@ Electron$1.app.whenReady().then(function (param) {
                   return Promise.resolve(undefined);
                 });
     });
+
+Electron$1.app.on("window-all-closed", (function (param) {
+        
+      }));
 
 export {
   appState ,

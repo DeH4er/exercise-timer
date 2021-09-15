@@ -1,9 +1,9 @@
 @module("./Window.css")
 external styles: {..} = "default"
 
-let onMinimize = () => Command.sendCommand(Shared.Command.MinimizeWindow)
+let onMinimize = () => Command.send(Shared.Command.MinimizeWindow)
 let onMaximize = () => ()
-let onClose = () => Command.sendCommand(Shared.Command.CloseWindow)
+let onClose = () => Command.send(Shared.Command.CloseWindow)
 
 @react.component
 let make = (

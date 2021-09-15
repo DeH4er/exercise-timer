@@ -4,20 +4,20 @@ import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as Command$Shared from "shared/src/Command.bs.js";
 import * as IpcRenderer$Web from "./IpcRenderer.bs.js";
 
-function onCommand(listener) {
+function on(listener) {
   return IpcRenderer$Web.on("main", (function (param, args) {
                 Belt_Option.map(Command$Shared.decodeCommand(args), listener);
                 
               }));
 }
 
-function sendCommand(command) {
+function send(command) {
   return IpcRenderer$Web.send("main", Command$Shared.encodeCommand(command));
 }
 
 export {
-  onCommand ,
-  sendCommand ,
+  on ,
+  send ,
   
 }
 /* No side effect */

@@ -12,7 +12,7 @@ function save(settings) {
 function load(param) {
   return Promise.resolve({
               TAG: /* Ok */0,
-              _0: Settings$Shared.defaultSettings
+              _0: Settings$Shared.$$default
             });
 }
 

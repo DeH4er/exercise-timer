@@ -39,7 +39,7 @@ let loadSettings = () => {
     | Ok(settings) => settings
     | Error(err) => {
         Js.log(err)
-        Shared.Settings.defaultSettings
+        Shared.Settings.default
       }
     }
     appState.settings = Some(settings)
@@ -88,13 +88,22 @@ Command.on((event, command) => {
     })
     ->ignore
   | MinimizeWindow => window->BrowserWindow.minimize
-  | GetSettings => appState.settings -> Belt.Option.map(settings => event->Command.reply(settings->ReturnSettings)) -> ignore
-  | SetBreakDuration(breakDuration) => appState.settings -> Belt.Option.map(settings => {
-      appState.settings = {...settings, breakDuration}->Some
-    }) -> ignore
-  | SetBreakInterval(breakInterval) => appState.settings -> Belt.Option.map(settings => {
-      appState.settings = {...settings, breakInterval}->Some
-    }) -> ignore
+  | GetSettings =>
+    appState.settings
+    ->Belt.Option.map(settings => settings->ReturnSettings->Command.send(event.sender))
+    ->ignore
+  | SetBreakDuration(breakDuration) =>
+    appState.settings
+    ->Belt.Option.map(settings => {
+      appState.settings = {...settings, breakDuration: breakDuration}->Some
+    })
+    ->ignore
+  | SetBreakInterval(breakInterval) =>
+    appState.settings
+    ->Belt.Option.map(settings => {
+      appState.settings = {...settings, breakInterval: breakInterval}->Some
+    })
+    ->ignore
   | ReturnSettings(_) => ()
   }
 })
@@ -108,3 +117,5 @@ App.whenReady()
   })
 })
 ->ignore
+
+App.on("window-all-closed", () => ())

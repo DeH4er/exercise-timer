@@ -6,7 +6,7 @@
   "main": "build/desktop.js",
   "scripts": {
     "start": "electron .",
-    "compile": "concurrently --raw --kill-others \"npm:web:compile\" \"npm:desktop:compile\" \"npm:shared:compile\"",
+    "compile": "concurrently --raw --kill-others \"npm:shared:compile\" \"npm:desktop:compile\" \"npm:web:compile\"",
     "dist": "electron-builder build",
     "build": "concurrently --kill-others \"npm:desktop:build\" \"npm:web:build\"",
     "build-watch": "concurrently --kill-others \"npm:web:build-watch\" \"npm:desktop:build-watch\"",

@@ -7,6 +7,9 @@ module App = {
 
   @module("electron") @scope("app")
   external quit: unit => unit = "quit"
+
+  @module("electron") @scope("app")
+  external on: (string, unit => unit) => unit = "on"
 }
 
 module WebContents = {

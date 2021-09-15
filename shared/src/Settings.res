@@ -7,12 +7,12 @@ type t = {
   breakDuration: int,
 }
 
-let defaultSettings: t = {
+let default: t = {
   {
-    maxBreakInterval: 0,
+    maxBreakInterval: 10,
     minBreakInterval: 0,
     breakInterval: 0,
-    maxBreakDuration: 0,
+    maxBreakDuration: 10,
     minBreakDuration: 0,
     breakDuration: 0,
   }

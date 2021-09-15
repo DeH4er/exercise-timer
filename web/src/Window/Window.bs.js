@@ -6,7 +6,7 @@ import WindowCss from "./Window.css";
 import * as Titlebar$Web from "../Titlebar/Titlebar.bs.js";
 
 function onMinimize(param) {
-  return Command$Web.sendCommand(/* MinimizeWindow */1);
+  return Command$Web.send(/* MinimizeWindow */1);
 }
 
 function onMaximize(param) {
@@ -14,7 +14,7 @@ function onMaximize(param) {
 }
 
 function onClose(param) {
-  return Command$Web.sendCommand(/* CloseWindow */0);
+  return Command$Web.send(/* CloseWindow */0);
 }
 
 function $$Window(Props) {

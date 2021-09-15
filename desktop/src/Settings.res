@@ -3,7 +3,7 @@ let save: Shared.Settings.t => Promise.t<result<unit, string>> = settings => {
 }
 
 let load: unit => Promise.t<result<Shared.Settings.t, string>> = () => {
-  Shared.Settings.defaultSettings
+  Shared.Settings.default
   ->Ok
   ->Promise.resolve
 }

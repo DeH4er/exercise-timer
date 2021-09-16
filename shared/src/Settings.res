@@ -1,19 +1,25 @@
+open Time
+
 type t = {
   maxBreakInterval: int,
   minBreakInterval: int,
+  tickBreakInterval: int,
   breakInterval: int,
   maxBreakDuration: int,
   minBreakDuration: int,
+  tickBreakDuration: int,
   breakDuration: int,
 }
 
 let default: t = {
   {
-    maxBreakInterval: 10,
-    minBreakInterval: 0,
-    breakInterval: 0,
-    maxBreakDuration: 10,
-    minBreakDuration: 0,
-    breakDuration: 0,
+    maxBreakInterval: 2.5->hoursToMillis,
+    minBreakInterval: 0.5->hoursToMillis,
+    tickBreakInterval: 5->minutesToMillis,
+    breakInterval: 1.0->hoursToMillis,
+    maxBreakDuration: 30->minutesToMillis,
+    minBreakDuration: 5->minutesToMillis,
+    tickBreakDuration: 1->minutesToMillis,
+    breakDuration: 5->minutesToMillis,
   }
 }

@@ -123,9 +123,11 @@ Command.on(function ($$event, command) {
                       appState.settings = {
                         maxBreakInterval: settings.maxBreakInterval,
                         minBreakInterval: settings.minBreakInterval,
+                        tickBreakInterval: settings.tickBreakInterval,
                         breakInterval: settings.breakInterval,
                         maxBreakDuration: settings.maxBreakDuration,
                         minBreakDuration: settings.minBreakDuration,
+                        tickBreakDuration: settings.tickBreakDuration,
                         breakDuration: breakDuration
                       };
                       
@@ -137,9 +139,11 @@ Command.on(function ($$event, command) {
                       appState.settings = {
                         maxBreakInterval: settings.maxBreakInterval,
                         minBreakInterval: settings.minBreakInterval,
+                        tickBreakInterval: settings.tickBreakInterval,
                         breakInterval: breakInterval,
                         maxBreakDuration: settings.maxBreakDuration,
                         minBreakDuration: settings.minBreakDuration,
+                        tickBreakDuration: settings.tickBreakDuration,
                         breakDuration: settings.breakDuration
                       };
                       

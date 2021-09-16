@@ -4,7 +4,17 @@ external styles: {..} = "default"
 type settingsAction =
   LoadComplete(Shared.Settings.t) | SetBreakInterval(int) | SetBreakDuration(int)
 
-let reducer: (Shared.Settings.t, settingsAction) => Shared.Settings.t = (state, action) => {
+type ui = {
+  breakIntervalMsg: string,
+  breakDurationMsg: string,
+}
+
+type state = {
+  settings: Shared.Settings.t,
+  ui: ui,
+}
+
+let settingsReducer: (Shared.Settings.t, settingsAction) => Shared.Settings.t = (state, action) => {
   switch action {
   | SetBreakInterval(breakInterval) => {...state, breakInterval: breakInterval}
   | SetBreakDuration(breakDuration) => {...state, breakDuration: breakDuration}
@@ -12,9 +22,30 @@ let reducer: (Shared.Settings.t, settingsAction) => Shared.Settings.t = (state, 
   }
 }
 
+let uiReducer: (ui, settingsAction) => ui = (state, action) => {
+  switch action {
+  | SetBreakInterval(breakInterval) => {...state, breakIntervalMsg: Shared.Time.msToString(breakInterval)}
+  | SetBreakDuration(breakDuration) => {...state, breakDurationMsg: Shared.Time.msToString(breakDuration)}
+  | LoadComplete(settings) => {
+      breakIntervalMsg: Shared.Time.msToString(settings.breakInterval),
+      breakDurationMsg: Shared.Time.msToString(settings.breakDuration),
+    }
+  }
+}
+
+let reducer: (state, settingsAction) => state = (state, action) => {
+  {
+    settings: settingsReducer(state.settings, action),
+    ui: uiReducer(state.ui, action),
+  }
+}
+
 @react.component
 let make = () => {
-  let (state, dispatch) = React.useReducer(reducer, Shared.Settings.default)
+  let ({settings, ui}, dispatch) = React.useReducer(
+    reducer,
+    {settings: Shared.Settings.default, ui: {breakIntervalMsg: "", breakDurationMsg: ""}},
+  )
 
   React.useEffect0(() => {
     Command.on(cmd => {
@@ -43,25 +74,27 @@ let make = () => {
         <h3> {React.string("Break interval")} </h3>
         <div className="settings__slider">
           <Slider
-            min={state.minBreakInterval->Belt.Int.toFloat}
-            max={state.maxBreakInterval->Belt.Int.toFloat}
-            value={state.breakInterval->Belt.Int.toFloat}
+            min={settings.minBreakInterval->Belt.Int.toFloat}
+            max={settings.maxBreakInterval->Belt.Int.toFloat}
+            value={settings.breakInterval->Belt.Int.toFloat}
+            step={settings.tickBreakInterval->Belt.Int.toFloat}
             onChange={onBreakIntervalChange}
           />
         </div>
-        <p className="settings__detail"> {React.string("2 hours 30 minutes")} </p>
+        <p className="settings__detail"> {ui.breakIntervalMsg->React.string} </p>
       </section>
       <section className="settings__section">
         <h3> {React.string("Break duration")} </h3>
         <div className="settings__slider">
           <Slider
-            min={state.minBreakDuration->Belt.Int.toFloat}
-            max={state.maxBreakDuration->Belt.Int.toFloat}
-            value={state.breakDuration->Belt.Int.toFloat}
+            min={settings.minBreakDuration->Belt.Int.toFloat}
+            max={settings.maxBreakDuration->Belt.Int.toFloat}
+            value={settings.breakDuration->Belt.Int.toFloat}
+            step={settings.tickBreakDuration->Belt.Int.toFloat}
             onChange={onBreakDurationChange}
           />
         </div>
-        <p className="settings__detail"> {React.string("30 minutes")} </p>
+        <p className="settings__detail"> {ui.breakDurationMsg->React.string} </p>
       </section>
     </div>
   </Window>

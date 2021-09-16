@@ -5,10 +5,11 @@ import * as React from "react";
 import * as Slider$Web from "../components/Slider.bs.js";
 import * as Window$Web from "../Window/Window.bs.js";
 import * as Command$Web from "../Interop/Command.bs.js";
+import * as Time$Shared from "shared/src/Time.bs.js";
 import SettingsCss from "./Settings.css";
 import * as Settings$Shared from "shared/src/Settings.bs.js";
 
-function reducer(state, action) {
+function settingsReducer(state, action) {
   switch (action.TAG | 0) {
     case /* LoadComplete */0 :
         return action._0;
@@ -16,28 +17,69 @@ function reducer(state, action) {
         return {
                 maxBreakInterval: state.maxBreakInterval,
                 minBreakInterval: state.minBreakInterval,
+                tickBreakInterval: state.tickBreakInterval,
                 breakInterval: action._0,
                 maxBreakDuration: state.maxBreakDuration,
                 minBreakDuration: state.minBreakDuration,
+                tickBreakDuration: state.tickBreakDuration,
                 breakDuration: state.breakDuration
               };
     case /* SetBreakDuration */2 :
         return {
                 maxBreakInterval: state.maxBreakInterval,
                 minBreakInterval: state.minBreakInterval,
+                tickBreakInterval: state.tickBreakInterval,
                 breakInterval: state.breakInterval,
                 maxBreakDuration: state.maxBreakDuration,
                 minBreakDuration: state.minBreakDuration,
+                tickBreakDuration: state.tickBreakDuration,
                 breakDuration: action._0
               };
     
   }
 }
 
+function uiReducer(state, action) {
+  switch (action.TAG | 0) {
+    case /* LoadComplete */0 :
+        var settings = action._0;
+        return {
+                breakIntervalMsg: Time$Shared.msToString(settings.breakInterval),
+                breakDurationMsg: Time$Shared.msToString(settings.breakDuration)
+              };
+    case /* SetBreakInterval */1 :
+        return {
+                breakIntervalMsg: Time$Shared.msToString(action._0),
+                breakDurationMsg: state.breakDurationMsg
+              };
+    case /* SetBreakDuration */2 :
+        return {
+                breakIntervalMsg: state.breakIntervalMsg,
+                breakDurationMsg: Time$Shared.msToString(action._0)
+              };
+    
+  }
+}
+
+function reducer(state, action) {
+  return {
+          settings: settingsReducer(state.settings, action),
+          ui: uiReducer(state.ui, action)
+        };
+}
+
 function Settings(Props) {
-  var match = React.useReducer(reducer, Settings$Shared.$$default);
+  var match = React.useReducer(reducer, {
+        settings: Settings$Shared.$$default,
+        ui: {
+          breakIntervalMsg: "",
+          breakDurationMsg: ""
+        }
+      });
   var dispatch = match[1];
-  var state = match[0];
+  var match$1 = match[0];
+  var ui = match$1.ui;
+  var settings = match$1.settings;
   React.useEffect((function () {
           Command$Web.on(function (cmd) {
                 if (typeof cmd === "number" || cmd.TAG !== /* ReturnSettings */0) {
@@ -81,24 +123,26 @@ function Settings(Props) {
                       }, React.createElement("h3", undefined, "Break interval"), React.createElement("div", {
                             className: "settings__slider"
                           }, React.createElement(Slider$Web.make, {
-                                value: state.breakInterval,
+                                value: settings.breakInterval,
                                 onChange: onBreakIntervalChange,
-                                min: state.minBreakInterval,
-                                max: state.maxBreakInterval
+                                min: settings.minBreakInterval,
+                                max: settings.maxBreakInterval,
+                                step: settings.tickBreakInterval
                               })), React.createElement("p", {
                             className: "settings__detail"
-                          }, "2 hours 30 minutes")), React.createElement("section", {
+                          }, ui.breakIntervalMsg)), React.createElement("section", {
                         className: "settings__section"
                       }, React.createElement("h3", undefined, "Break duration"), React.createElement("div", {
                             className: "settings__slider"
                           }, React.createElement(Slider$Web.make, {
-                                value: state.breakDuration,
+                                value: settings.breakDuration,
                                 onChange: onBreakDurationChange,
-                                min: state.minBreakDuration,
-                                max: state.maxBreakDuration
+                                min: settings.minBreakDuration,
+                                max: settings.maxBreakDuration,
+                                step: settings.tickBreakDuration
                               })), React.createElement("p", {
                             className: "settings__detail"
-                          }, "30 minutes"))),
+                          }, ui.breakDurationMsg))),
               maximize: false
             });
 }

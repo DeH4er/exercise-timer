@@ -6,7 +6,7 @@ let minutesToMillis: int => int = minutes => {
   minutes * 60_000
 }
 
-let msToString: int => string = ms => {
+let millisToString: int => string = ms => {
   let seconds = ms / 1000
   let minutes = seconds / 60
   let hours = minutes / 60

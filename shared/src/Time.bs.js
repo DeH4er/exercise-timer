@@ -9,7 +9,7 @@ function minutesToMillis(minutes) {
   return Math.imul(minutes, 60000);
 }
 
-function msToString(ms) {
+function millisToString(ms) {
   var seconds = ms / 1000 | 0;
   var minutes = seconds / 60 | 0;
   var hours = minutes / 60 | 0;
@@ -45,7 +45,7 @@ function msToString(ms) {
 export {
   hoursToMillis ,
   minutesToMillis ,
-  msToString ,
+  millisToString ,
   
 }
 /* No side effect */

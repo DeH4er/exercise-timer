@@ -19,7 +19,7 @@ let createWindow = (~width: int, ~height: int, ~startupUrl: string, ()) => {
     ~height,
     ~frame=false,
     ~webPreferences={
-      preload: Some(Node.Path.join([Paths.scriptsPath, "windowPreload.js"])),
+      preload: Some(Node.Path.resolve([Paths.scriptsPath, "windowPreload.js"])),
     },
     (),
   )
@@ -37,17 +37,25 @@ let loadSettings = () => {
   Settings.load()->then(res => {
     let settings = switch res {
     | Ok(settings) => settings
-    | Error(err) => {
-        Js.log(err)
-        Shared.Settings.default
-      }
+    | Error(_) => Shared.Settings.default
     }
     appState.settings = Some(settings)
     resolve()
   })
 }
 
-let exit = App.quit
+let exit = () => {
+  appState.settings
+  ->Belt.Option.map(settings =>
+    settings
+    ->Settings.save
+    ->then(_ => {
+      App.quit()
+      resolve()
+    })
+  )
+  ->ignore
+}
 
 let openSettings = () => {
   switch appState.settingsWindow {
@@ -60,7 +68,7 @@ let openSettings = () => {
 }
 
 let createTray = () => {
-  let iconPath = Node.Path.join([Paths.imgPath, "icon.png"])
+  let iconPath = Node.Path.resolve([Paths.imgPath, "icon.png"])
   let createdTray = Tray.create(iconPath)
   appState.tray = Some(createdTray)
   let menu = Menu.create([{label: "Settings", click: openSettings}, {label: "Exit", click: exit}])
@@ -118,4 +126,4 @@ App.whenReady()
 })
 ->ignore
 
-App.on("window-all-closed", () => ())
+App.on("window-all-closed", ignore)

@@ -21,7 +21,7 @@ var appState = {
 
 function createWindow(width, height, startupUrl, param) {
   var $$window = Electron.BrowserWindow.create(false, {
-        preload: Path.join(Paths.scriptsPath, "windowPreload.js")
+        preload: Path.resolve(Paths.scriptsPath, "windowPreload.js")
       }, width, height, undefined);
   var url = Paths.webPath + "#" + startupUrl;
   $$window.loadURL(url);
@@ -34,19 +34,19 @@ function createWindow(width, height, startupUrl, param) {
 function loadSettings(param) {
   return Settings.load(undefined).then(function (res) {
               var settings;
-              if (res.TAG === /* Ok */0) {
-                settings = res._0;
-              } else {
-                console.log(res._0);
-                settings = Settings$Shared.$$default;
-              }
+              settings = res.TAG === /* Ok */0 ? res._0 : Settings$Shared.$$default;
               appState.settings = settings;
               return Promise.resolve(undefined);
             });
 }
 
-function exit(prim) {
-  Electron$1.app.quit();
+function exit(param) {
+  Belt_Option.map(appState.settings, (function (settings) {
+          return Settings.save(settings).then(function (param) {
+                      Electron$1.app.quit();
+                      return Promise.resolve(undefined);
+                    });
+        }));
   
 }
 
@@ -61,7 +61,7 @@ function openSettings(param) {
 }
 
 function createTray(param) {
-  var iconPath = Path.join(Paths.imgPath, "icon.png");
+  var iconPath = Path.resolve(Paths.imgPath, "icon.png");
   var createdTray = new Electron$1.Tray(iconPath);
   appState.tray = Caml_option.some(createdTray);
   var menu = Electron$1.Menu.buildFromTemplate([
@@ -162,7 +162,7 @@ Electron$1.app.whenReady().then(function (param) {
                 });
     });
 
-Electron$1.app.on("window-all-closed", (function (param) {
+Electron$1.app.on("window-all-closed", (function (prim) {
         
       }));
 

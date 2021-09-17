@@ -1,9 +1,7 @@
-let save: Shared.Settings.t => Promise.t<result<unit, string>> = settings => {
-  settings->ignore->Ok->Promise.resolve
+let save: Shared.Settings.t => Promise.t<result<unit, Node.Fs.err>> = settings => {
+  settings->JsonStorage.set("settings")
 }
 
-let load: unit => Promise.t<result<Shared.Settings.t, string>> = () => {
-  Shared.Settings.default
-  ->Ok
-  ->Promise.resolve
+let load: unit => Promise.t<result<Shared.Settings.t, Node.Fs.err>> = () => {
+  JsonStorage.get("settings")
 }

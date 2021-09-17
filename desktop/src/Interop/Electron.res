@@ -1,4 +1,6 @@
 module App = {
+  type event
+
   @module("electron") @scope("app")
   external isPackaged: bool = "isPackaged"
 
@@ -9,7 +11,14 @@ module App = {
   external quit: unit => unit = "quit"
 
   @module("electron") @scope("app")
-  external on: (string, unit => unit) => unit = "on"
+  external on: (string, event => unit) => unit = "on"
+
+  type pathName = [ #userData ]
+
+  @module("electron") @scope("app")
+  external _getPathUnsafe: string => string = "getPath"
+
+  let getPath: pathName => string = pathName => _getPathUnsafe(pathName :> string)
 }
 
 module WebContents = {

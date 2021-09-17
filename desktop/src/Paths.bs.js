@@ -3,13 +3,13 @@
 import * as Path from "path";
 import * as Electron from "electron";
 
-var resourcesPath = Electron.app.isPackaged ? Path.join(process.resourcesPath) : Path.join(__dirname, "..", "resources");
+var resourcesPath = Electron.app.isPackaged ? Path.resolve(process.resourcesPath) : Path.resolve(__dirname, "..", "resources");
 
-var imgPath = Path.join(resourcesPath, "img");
+var imgPath = Path.resolve(resourcesPath, "img");
 
-var scriptsPath = Path.join(resourcesPath, "scripts");
+var scriptsPath = Path.resolve(resourcesPath, "scripts");
 
-var webPath = Electron.app.isPackaged ? Path.join(resourcesPath, "web", "index.html") : "http://localhost:3000";
+var webPath = Electron.app.isPackaged ? Path.resolve(resourcesPath, "web", "index.html") : "http://localhost:3000";
 
 export {
   resourcesPath ,

@@ -3,7 +3,13 @@
 import * as Electron from "electron";
 import * as Utils$Shared from "shared/src/Utils.bs.js";
 
-var App = {};
+function getPath(pathName) {
+  return Electron.app.getPath(pathName);
+}
+
+var App = {
+  getPath: getPath
+};
 
 var WebContents = {};
 

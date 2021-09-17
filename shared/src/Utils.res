@@ -1,3 +1,9 @@
+@val @scope("JSON")
+external stringify: 'a => string = "stringify"
+
+@val @scope("JSON")
+external parse: string => 'a = "parse"
+
 @val
 external arguments: array<'a> = "arguments"
 

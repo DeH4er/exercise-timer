@@ -4,6 +4,7 @@ open Electron
 type appState = {
   mutable tray: option<Tray.t>,
   mutable settingsWindow: option<BrowserWindow.t>,
+  mutable breakWindows: option<array<BrowserWindow.t>>,
   mutable settings: option<Shared.Settings.t>,
 }
 
@@ -11,12 +12,22 @@ let appState = {
   tray: None,
   settingsWindow: None,
   settings: None,
+  breakWindows: None,
 }
 
-let createWindow = (~width: int, ~height: int, ~startupUrl: string, ()) => {
+let createWindow = (
+  ~width: int,
+  ~height: int,
+  ~x: option<int>=?,
+  ~y: option<int>=?,
+  ~startupUrl: string,
+  (),
+) => {
   let window = BrowserWindow.create(
     ~width,
     ~height,
+    ~x,
+    ~y,
     ~frame=false,
     ~webPreferences={
       preload: Some(Node.Path.resolve([Paths.scriptsPath, "windowPreload.js"])),
@@ -57,7 +68,31 @@ let exit = () => {
   ->ignore
 }
 
-let openSettings = () => {
+let openBreakWindows = () => {
+  switch appState.breakWindows {
+  | None =>
+    appState.breakWindows =
+      Screen.getAllDisplays()
+      ->Js.Array2.map(display => {
+        let paddingFraction = 0.1
+        let horizontalPadding = display.bounds.width *. paddingFraction
+        let verticalPadding = display.bounds.height *. paddingFraction
+
+        createWindow(
+          ~width=(display.bounds.width -. 2.0 *. horizontalPadding)->Belt.Float.toInt,
+          ~height=(display.bounds.height -. 2.0 *. verticalPadding)->Belt.Float.toInt,
+          ~x=(display.bounds.x +. horizontalPadding)->Belt.Float.toInt,
+          ~y=(display.bounds.y +. verticalPadding)->Belt.Float.toInt,
+          ~startupUrl="break",
+          (),
+        )
+      })
+      ->Some
+  | _ => ()
+  }
+}
+
+let openSettingsWindow = () => {
   switch appState.settingsWindow {
   | None => {
       let window = createWindow(~width=400, ~height=250, ~startupUrl="settings", ())
@@ -71,7 +106,11 @@ let createTray = () => {
   let iconPath = Node.Path.resolve([Paths.imgPath, "icon.png"])
   let createdTray = Tray.create(iconPath)
   appState.tray = Some(createdTray)
-  let menu = Menu.create([{label: "Settings", click: openSettings}, {label: "Exit", click: exit}])
+  let menu = Menu.create([
+    {label: "Break", click: openBreakWindows},
+    {label: "Settings", click: openSettingsWindow},
+    {label: "Exit", click: exit},
+  ])
   Tray.setContextMenu(createdTray, menu)
 }
 

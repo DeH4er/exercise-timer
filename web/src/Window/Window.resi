@@ -1,8 +1,9 @@
 @react.component
 let make: (
-  ~title: string,
   ~children: React.element,
-  ~minimize:bool=?,
-  ~maximize:bool=?,
-  ~close:bool=?,
-  ) => React.element
+  ~title: string=?,
+  ~minimize: bool=?,
+  ~maximize: bool=?,
+  ~close: bool=?,
+  ~titlebar: bool=?,
+) => React.element

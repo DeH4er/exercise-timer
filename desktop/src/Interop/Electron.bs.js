@@ -13,10 +13,12 @@ var App = {
 
 var WebContents = {};
 
-function create(frame, webPreferences, width, height, param) {
+function create(width, height, x, y, frame, webPreferences, param) {
   return new Electron.BrowserWindow({
               width: width,
               height: height,
+              x: x,
+              y: y,
               frame: frame,
               webPreferences: webPreferences
             });
@@ -39,6 +41,10 @@ var IpcMain = {
   on: on
 };
 
+var Display = {};
+
+var $$Screen = {};
+
 export {
   App ,
   WebContents ,
@@ -46,6 +52,8 @@ export {
   Menu ,
   Tray ,
   IpcMain ,
+  Display ,
+  $$Screen ,
   
 }
 /* electron Not a pure module */

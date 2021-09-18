@@ -13,12 +13,12 @@ module App = {
   @module("electron") @scope("app")
   external on: (string, event => unit) => unit = "on"
 
-  type pathName = [ #userData ]
+  type pathName = [#userData]
 
   @module("electron") @scope("app")
   external _getPathUnsafe: string => string = "getPath"
 
-  let getPath: pathName => string = pathName => _getPathUnsafe(pathName :> string)
+  let getPath: pathName => string = pathName => _getPathUnsafe((pathName :> string))
 }
 
 module WebContents = {
@@ -39,13 +39,6 @@ module BrowserWindow = {
 
   type webPreferences = {preload: option<string>}
 
-  type createProps = {
-    width: int,
-    height: int,
-    frame: option<bool>,
-    webPreferences: option<webPreferences>,
-  }
-
   @send
   external loadURL: (t, string) => unit = "loadURL"
 
@@ -56,20 +49,24 @@ module BrowserWindow = {
   external minimize: t => unit = "minimize"
 
   @new @module("electron")
-  external _create: createProps => t = "BrowserWindow"
+  external _create: 'a => t = "BrowserWindow"
 
   let create: (
-    ~frame: bool=?,
-    ~webPreferences: webPreferences=?,
     ~width: int,
     ~height: int,
+    ~x: option<int>=?,
+    ~y: option<int>=?,
+    ~frame: bool=?,
+    ~webPreferences: webPreferences=?,
     unit,
-  ) => t = (~frame=?, ~webPreferences=?, ~width, ~height, ()) =>
+  ) => t = (~width, ~height, ~x=?, ~y=?, ~frame=?, ~webPreferences=?, ()) =>
     _create({
-      width: width,
-      height: height,
-      frame: frame,
-      webPreferences: webPreferences,
+      "width": width,
+      "height": height,
+      "x": x,
+      "y": y,
+      "frame": frame,
+      "webPreferences": webPreferences,
     })
 
   @module("electron") @scope("BrowserWindow")
@@ -110,4 +107,20 @@ module IpcMain = {
   let on: (string, (event, array<string>) => unit) => unit = (channel, listener) => {
     _on(channel, Shared.Utils.rest2(listener))
   }
+}
+
+module Display = {
+  type rect = {
+    x: float,
+    y: float,
+    width: float,
+    height: float,
+  }
+
+  type t = {bounds: rect}
+}
+
+module Screen = {
+  @module("electron") @scope("screen")
+  external getAllDisplays: unit => array<Display.t> = "getAllDisplays"
 }

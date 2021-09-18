@@ -16,13 +16,14 @@ import ElectronDevtoolsInstaller$1 from "electron-devtools-installer";
 var appState = {
   tray: undefined,
   settingsWindow: undefined,
+  breakWindows: undefined,
   settings: undefined
 };
 
-function createWindow(width, height, startupUrl, param) {
-  var $$window = Electron.BrowserWindow.create(false, {
+function createWindow(width, height, x, y, startupUrl, param) {
+  var $$window = Electron.BrowserWindow.create(width, height, Caml_option.some(x), Caml_option.some(y), false, {
         preload: Path.resolve(Paths.scriptsPath, "windowPreload.js")
-      }, width, height, undefined);
+      }, undefined);
   var url = Paths.webPath + "#" + startupUrl;
   $$window.loadURL(url);
   if (!Electron$1.app.isPackaged) {
@@ -50,12 +51,26 @@ function exit(param) {
   
 }
 
-function openSettings(param) {
+function openBreakWindows(param) {
+  var match = appState.breakWindows;
+  if (match !== undefined) {
+    return ;
+  } else {
+    appState.breakWindows = Electron$1.screen.getAllDisplays().map(function (display) {
+          var horizontalPadding = display.bounds.width * 0.1;
+          var verticalPadding = display.bounds.height * 0.1;
+          return createWindow(display.bounds.width - 2.0 * horizontalPadding | 0, display.bounds.height - 2.0 * verticalPadding | 0, display.bounds.x + horizontalPadding | 0, display.bounds.y + verticalPadding | 0, "break", undefined);
+        });
+    return ;
+  }
+}
+
+function openSettingsWindow(param) {
   var match = appState.settingsWindow;
   if (match !== undefined) {
     return ;
   }
-  var $$window = createWindow(400, 250, "settings", undefined);
+  var $$window = createWindow(400, 250, undefined, undefined, "settings", undefined);
   appState.settingsWindow = $$window;
   
 }
@@ -66,8 +81,12 @@ function createTray(param) {
   appState.tray = Caml_option.some(createdTray);
   var menu = Electron$1.Menu.buildFromTemplate([
         {
+          label: "Break",
+          click: openBreakWindows
+        },
+        {
           label: "Settings",
-          click: openSettings
+          click: openSettingsWindow
         },
         {
           label: "Exit",
@@ -171,7 +190,8 @@ export {
   createWindow ,
   loadSettings ,
   exit ,
-  openSettings ,
+  openBreakWindows ,
+  openSettingsWindow ,
   createTray ,
   installDevTools ,
   

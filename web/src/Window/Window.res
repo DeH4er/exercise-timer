@@ -7,17 +7,15 @@ let onClose = () => Command.send(Shared.Command.CloseWindow)
 
 @react.component
 let make = (
-  ~title: string,
   ~children: React.element,
+  ~title: string="",
   ~minimize=true,
   ~maximize=true,
   ~close=true,
-  ) => {
-
+  ~titlebar=true,
+) => {
   <div className="window">
-    <Titlebar title maximize minimize close onMinimize onMaximize onClose />
-    <div className="window__content">
-      {children}
-    </div>
+    {titlebar ? <Titlebar title maximize minimize close onMinimize onMaximize onClose /> : <> </>}
+    <div className="window__content"> {children} </div>
   </div>
 }

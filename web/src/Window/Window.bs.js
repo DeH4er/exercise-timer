@@ -18,25 +18,28 @@ function onClose(param) {
 }
 
 function $$Window(Props) {
-  var title = Props.title;
   var children = Props.children;
+  var titleOpt = Props.title;
   var minimizeOpt = Props.minimize;
   var maximizeOpt = Props.maximize;
   var closeOpt = Props.close;
+  var titlebarOpt = Props.titlebar;
+  var title = titleOpt !== undefined ? titleOpt : "";
   var minimize = minimizeOpt !== undefined ? minimizeOpt : true;
   var maximize = maximizeOpt !== undefined ? maximizeOpt : true;
   var close = closeOpt !== undefined ? closeOpt : true;
+  var titlebar = titlebarOpt !== undefined ? titlebarOpt : true;
   return React.createElement("div", {
               className: "window"
-            }, React.createElement(Titlebar$Web.make, {
-                  title: title,
-                  minimize: minimize,
-                  maximize: maximize,
-                  close: close,
-                  onMinimize: onMinimize,
-                  onMaximize: onMaximize,
-                  onClose: onClose
-                }), React.createElement("div", {
+            }, titlebar ? React.createElement(Titlebar$Web.make, {
+                    title: title,
+                    minimize: minimize,
+                    maximize: maximize,
+                    close: close,
+                    onMinimize: onMinimize,
+                    onMaximize: onMaximize,
+                    onClose: onClose
+                  }) : React.createElement(React.Fragment, undefined), React.createElement("div", {
                   className: "window__content"
                 }, children));
 }

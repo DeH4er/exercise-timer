@@ -115,7 +115,6 @@ function Settings(Props) {
               });
   };
   return React.createElement(Window$Web.make, {
-              title: "Settings",
               children: React.createElement("div", {
                     className: "settings"
                   }, React.createElement("section", {
@@ -143,6 +142,7 @@ function Settings(Props) {
                               })), React.createElement("p", {
                             className: "settings__detail"
                           }, ui.breakDurationMsg))),
+              title: "Settings",
               maximize: false
             });
 }

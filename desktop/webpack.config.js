@@ -2,12 +2,12 @@ const path = require("path");
 
 const { env } = process;
 
+const isProduction = env.NODE_ENV === "production";
+
 module.exports = {
   entry: "./src/Main.bs.js",
   target: "electron-main",
-  optimization: {
-    minimize: env.NODE_ENV === 'production',
-  },
+  devtool: isProduction ? undefined : "inline-source-map",
   output: {
     filename: "desktop.js",
     path: path.resolve(__dirname, "..", "build"),

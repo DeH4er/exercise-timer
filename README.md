@@ -1,8 +1,27 @@
-# Exercise Timer
+# Exercise Timer :watch:
 
-Long working sessions could affect your health. Take a break
+Long working sessions could affect your health. Take a break ⏲️
 
-# How to run
+> Project made with ❤️, ReScript, Electron and React. Contributions are welcome
+
+
+# Table of Contents
+
+* [How it works](#how-it-works)
+* [How to install](#how-to-install)
+* [Development](#development)
+
+# <a name="how-it-works"></a>How it works
+
+This app sits in a tray and when time comes to take a break it'll create blocking windows on all your screens. You may want to stretch or exercise during this time. When your break is finished, app will schedule next break.
+
+# <a name="how-to-install"></a>How to install
+
+Currently, this repo doesn't have a compiled installer. But you may make an installer yourself. Please, refer to [How to dist](#how-to-dist) section
+
+# <a name="development"><a/>Development
+
+### How to run
 
 ```bash
 npm run compile
@@ -10,7 +29,7 @@ npm run build-watch
 npm start
 ```
 
-# How to dist
+### <a name="how-to-dist"></a>How to dist
 
 ```bash
 npm run compile
@@ -18,6 +37,8 @@ npm run build
 npm run dist
 ```
 
-# How to debug
+You'll find an installer under `dist` folder.
+
+### How to debug
 
 Currently, there's only a vscode launch config for debugging electron's main process. Renderer process can be debugged via dev tools + react debugger.

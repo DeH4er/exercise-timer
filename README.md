@@ -16,14 +16,14 @@ Long working sessions could affect your health. Take a break ⏲️
 ### Blocking windows
 This app sits in a tray and when time comes to take a break it'll create blocking windows on all your screens.
 
-![Blocking Window](https://github.com/DeH4er/exercise-timer/blob/main/.github/blocking-window.png?raw=true)
+![Blocking Window](https://raw.githubusercontent.com/DeH4er/exercise-timer/main/.github/blocking-window.png)
 
 You may want to stretch or exercise during this time. When your break is finished, app will schedule next break.
 
 ### Settings
 You can adjust your break timings under settings
 
-![Settings Window](https://github.com/DeH4er/exercise-timer/blob/main/.github/settings-window.png?raw=true)
+![Settings Window](https://raw.githubusercontent.com/DeH4er/exercise-timer/main/.github/settings-window.png)
 
 # <a name="how-to-install"></a>How to install
 

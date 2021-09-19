@@ -2,6 +2,7 @@
 
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
+import * as Translate$Web from "../Translate/Translate.bs.js";
 import * as ReactFeather from "react-feather";
 import TitlebarCss from "./Titlebar.css";
 
@@ -25,11 +26,12 @@ function Titlebar(Props) {
   var onClose = onCloseOpt !== undefined ? onCloseOpt : (function (param) {
         
       });
+  var match = Translate$Web.useTranslation(undefined);
   return React.createElement("div", {
               className: "titlebar"
             }, React.createElement("div", {
                   className: "titlebar__title"
-                }, title), React.createElement("div", {
+                }, Curry._1(match.t, title)), React.createElement("div", {
                   className: "titlebar__actions"
                 }, minimize ? React.createElement("div", {
                         className: "titlebar__action titlebar__minimize",

@@ -130,7 +130,7 @@ function openSettingsWindow(param) {
   if (match !== undefined) {
     return ;
   }
-  var $$window = createWindow(400, 250, undefined, undefined, "settings", undefined);
+  var $$window = createWindow(400, 370, undefined, undefined, "settings", undefined);
   appState.settingsWindow = $$window;
   
 }
@@ -201,7 +201,8 @@ Command.on(function ($$event, command) {
                         maxBreakDuration: settings.maxBreakDuration,
                         minBreakDuration: settings.minBreakDuration,
                         tickBreakDuration: settings.tickBreakDuration,
-                        breakDuration: breakDuration
+                        breakDuration: breakDuration,
+                        selectedLanguage: settings.selectedLanguage
                       };
                       
                     }));
@@ -217,15 +218,36 @@ Command.on(function ($$event, command) {
                         maxBreakDuration: settings.maxBreakDuration,
                         minBreakDuration: settings.minBreakDuration,
                         tickBreakDuration: settings.tickBreakDuration,
-                        breakDuration: settings.breakDuration
+                        breakDuration: settings.breakDuration,
+                        selectedLanguage: settings.selectedLanguage
                       };
                       
                     }));
               return ;
-          case /* ReturnSettings */0 :
-          case /* ReturnBreakTime */3 :
+          case /* ChangeLanguage */4 :
+              var language = command._0;
+              Belt_Option.map(appState.settings, (function (settings) {
+                      appState.settings = {
+                        maxBreakInterval: settings.maxBreakInterval,
+                        minBreakInterval: settings.minBreakInterval,
+                        tickBreakInterval: settings.tickBreakInterval,
+                        breakInterval: settings.breakInterval,
+                        maxBreakDuration: settings.maxBreakDuration,
+                        minBreakDuration: settings.minBreakDuration,
+                        tickBreakDuration: settings.tickBreakDuration,
+                        breakDuration: settings.breakDuration,
+                        selectedLanguage: language
+                      };
+                      return Electron$1.BrowserWindow.getAllWindows().map(function ($$window) {
+                                  return Command.send({
+                                              TAG: /* LanguageChanged */5,
+                                              _0: language
+                                            }, $$window.webContents);
+                                });
+                    }));
               return ;
-          
+          default:
+            return ;
         }
       }
     });

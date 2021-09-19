@@ -26,7 +26,8 @@ var $$default = {
   maxBreakDuration: default_maxBreakDuration,
   minBreakDuration: default_minBreakDuration,
   tickBreakDuration: default_tickBreakDuration,
-  breakDuration: default_breakDuration
+  breakDuration: default_breakDuration,
+  selectedLanguage: /* En */1
 };
 
 export {

@@ -71,6 +71,9 @@ module BrowserWindow = {
 
   @module("electron") @scope("BrowserWindow")
   external fromWebContents: WebContents.t => t = "fromWebContents"
+
+  @module("electron") @scope("BrowserWindow")
+  external getAllWindows: unit => array<t> = "getAllWindows"
 }
 
 module Menu = {

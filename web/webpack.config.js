@@ -7,6 +7,7 @@ const isDevelopment = process.env.NODE_ENV === "development";
 module.exports = {
   entry: path.resolve(__dirname, "src", "Index.bs.js"),
   mode: isDevelopment ? "development" : "production",
+  devtool: isDevelopment ? "inline-source-map" : undefined,
   devServer: {
     hot: true,
     port: 3000,

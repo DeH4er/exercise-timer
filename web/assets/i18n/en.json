@@ -1,0 +1,19 @@
+{
+  "SETTINGS": {
+    "BREAK_INTERVAL": "Break interval",
+    "BREAK_DURATION": "Break duration",
+    "LANGUAGE": "Language",
+    "TITLE": "Settings"
+  },
+  "TIME": {
+    "HOURS": "{{count}} hour",
+    "HOURS_plural": "{{count}} hours",
+    "MINUTES_plural": "{{count}} minutes",
+    "SECONDS": "{{count}} second",
+    "SECONDS_plural": "{{count}} seconds"
+  },
+  "LANGUAGE": {
+    "EN": "English",
+    "RU": "Russian"
+  }
+}

@@ -9,6 +9,7 @@ type t = {
   minBreakDuration: int,
   tickBreakDuration: int,
   breakDuration: int,
+  selectedLanguage: Language.t
 }
 
 let default: t = {
@@ -21,5 +22,6 @@ let default: t = {
     minBreakDuration: 5->minutesToMillis,
     tickBreakDuration: 1->minutesToMillis,
     breakDuration: 5->minutesToMillis,
+    selectedLanguage: En
   }
 }

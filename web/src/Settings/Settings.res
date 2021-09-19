@@ -4,17 +4,7 @@ external styles: {..} = "default"
 type settingsAction =
   LoadComplete(Shared.Settings.t) | SetBreakInterval(int) | SetBreakDuration(int)
 
-type ui = {
-  breakIntervalMsg: string,
-  breakDurationMsg: string,
-}
-
-type state = {
-  settings: Shared.Settings.t,
-  ui: ui,
-}
-
-let settingsReducer: (Shared.Settings.t, settingsAction) => Shared.Settings.t = (state, action) => {
+let reducer: (Shared.Settings.t, settingsAction) => Shared.Settings.t = (state, action) => {
   switch action {
   | SetBreakInterval(breakInterval) => {...state, breakInterval: breakInterval}
   | SetBreakDuration(breakDuration) => {...state, breakDuration: breakDuration}
@@ -22,36 +12,12 @@ let settingsReducer: (Shared.Settings.t, settingsAction) => Shared.Settings.t = 
   }
 }
 
-let uiReducer: (ui, settingsAction) => ui = (state, action) => {
-  switch action {
-  | SetBreakInterval(breakInterval) => {
-      ...state,
-      breakIntervalMsg: Shared.Time.millisToString(breakInterval, ~seconds=false, ()),
-    }
-  | SetBreakDuration(breakDuration) => {
-      ...state,
-      breakDurationMsg: Shared.Time.millisToString(breakDuration, ~seconds=false, ()),
-    }
-  | LoadComplete(settings) => {
-      breakIntervalMsg: Shared.Time.millisToString(settings.breakInterval, ~seconds=false, ()),
-      breakDurationMsg: Shared.Time.millisToString(settings.breakDuration, ~seconds=false, ()),
-    }
-  }
-}
-
-let reducer: (state, settingsAction) => state = (state, action) => {
-  {
-    settings: settingsReducer(state.settings, action),
-    ui: uiReducer(state.ui, action),
-  }
-}
-
 @react.component
 let make = () => {
-  let ({settings, ui}, dispatch) = React.useReducer(
-    reducer,
-    {settings: Shared.Settings.default, ui: {breakIntervalMsg: "", breakDurationMsg: ""}},
-  )
+  let (settings, dispatch) = React.useReducer(reducer, Shared.Settings.default)
+  let {t} = Translate.useTranslation()
+  let breakIntervalTime = settings.breakInterval->Shared.Time.millisToTime
+  let breakDurationTime = settings.breakDuration->Shared.Time.millisToTime
 
   React.useEffect0(() => {
     let listener = Command.on(cmd => {
@@ -80,10 +46,14 @@ let make = () => {
     value->Belt.Float.toInt->SetBreakDuration->dispatch
   }
 
-  <Window title="Settings" maximize=false>
+  <Window title="SETTINGS.TITLE" maximize=false>
     <div className="settings">
       <section className="settings__section">
-        <h3> {React.string("Break interval")} </h3>
+        <h3> {"SETTINGS.LANGUAGE"->t->React.string} </h3>
+        <LanguageSelector />
+      </section>
+      <section className="settings__section">
+        <h3> {"SETTINGS.BREAK_INTERVAL"->t->React.string} </h3>
         <div className="settings__slider">
           <Slider
             min={settings.minBreakInterval->Belt.Int.toFloat}
@@ -93,10 +63,12 @@ let make = () => {
             onChange={onBreakIntervalChange}
           />
         </div>
-        <p className="settings__detail"> {ui.breakIntervalMsg->React.string} </p>
+        <p className="settings__detail">
+          <Time hours={breakIntervalTime.hours} minutes={breakIntervalTime.minutes} />
+        </p>
       </section>
       <section className="settings__section">
-        <h3> {React.string("Break duration")} </h3>
+        <h3> {"SETTINGS.BREAK_DURATION"->t->React.string} </h3>
         <div className="settings__slider">
           <Slider
             min={settings.minBreakDuration->Belt.Int.toFloat}
@@ -106,7 +78,9 @@ let make = () => {
             onChange={onBreakDurationChange}
           />
         </div>
-        <p className="settings__detail"> {ui.breakDurationMsg->React.string} </p>
+        <p className="settings__detail">
+          <Time hours={breakDurationTime.hours} minutes={breakDurationTime.minutes} />
+        </p>
       </section>
     </div>
   </Window>

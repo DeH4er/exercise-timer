@@ -1,0 +1,27 @@
+.language-selector {
+  display: flex;
+  font-size: 10pt;
+}
+
+.language-selector__language {
+  padding: 10px;
+  margin-right: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.theme-dark .language-selector__language {
+  background: var(--theme-dark--gray3);
+}
+
+.theme-dark .language-selector__language:hover {
+  background: var(--theme-dark--gray4);
+}
+
+.theme-dark .language-selector__language:active {
+  background: var(--theme-dark--accent);
+}
+
+.theme-dark .language-selector__language--selected {
+  background: var(--theme-dark--accent);
+}

@@ -4,26 +4,19 @@ external styles: {..} = "default"
 type state = {
   breakTime: int,
   settings: Shared.Settings.t,
-  remainingText: string,
 }
 
 type action = SetBreakTime(int) | SetSettings(Shared.Settings.t)
-
-let getRemainingText: (int, int) => string = (breakTime, breakDuration) => {
-  (breakDuration - breakTime)->Shared.Time.millisToString(())
-}
 
 let reducer: (state, action) => state = (state, action) => {
   switch action {
   | SetBreakTime(breakTime) => {
       ...state,
       breakTime: breakTime,
-      remainingText: getRemainingText(breakTime, state.settings.breakDuration),
     }
   | SetSettings(settings) => {
       ...state,
       settings: settings,
-      remainingText: getRemainingText(state.breakTime, settings.breakDuration),
     }
   }
 }
@@ -32,8 +25,10 @@ let reducer: (state, action) => state = (state, action) => {
 let make = () => {
   let (state, dispatch) = React.useReducer(
     reducer,
-    {breakTime: 0, settings: Shared.Settings.default, remainingText: ""},
+    {breakTime: 0, settings: Shared.Settings.default},
   )
+
+  let remainingTime = (state.settings.breakDuration - state.breakTime)->Shared.Time.millisToTime
 
   React.useEffect0(() => {
     let listener = Command.on(cmd => {
@@ -65,7 +60,9 @@ let make = () => {
             value={state.breakTime->Belt.Int.toFloat}
           />
         </div>
-        <div className="break__remaining-text"> {state.remainingText->React.string} </div>
+        <div className="break__remaining-text">
+          <Time minutes={remainingTime.minutes} seconds={remainingTime.seconds} />
+        </div>
       </div>
     </div>
   </Window>

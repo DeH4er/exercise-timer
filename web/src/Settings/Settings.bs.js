@@ -2,14 +2,17 @@
 
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
+import * as Time$Web from "../components/Time.bs.js";
 import * as Slider$Web from "../components/Slider.bs.js";
 import * as Window$Web from "../Window/Window.bs.js";
 import * as Command$Web from "../Interop/Command.bs.js";
 import * as Time$Shared from "shared/src/Time.bs.js";
+import * as Translate$Web from "../Translate/Translate.bs.js";
 import SettingsCss from "./Settings.css";
 import * as Settings$Shared from "shared/src/Settings.bs.js";
+import * as LanguageSelector$Web from "../components/LanguageSelector.bs.js";
 
-function settingsReducer(state, action) {
+function reducer(state, action) {
   switch (action.TAG | 0) {
     case /* LoadComplete */0 :
         return action._0;
@@ -22,7 +25,8 @@ function settingsReducer(state, action) {
                 maxBreakDuration: state.maxBreakDuration,
                 minBreakDuration: state.minBreakDuration,
                 tickBreakDuration: state.tickBreakDuration,
-                breakDuration: state.breakDuration
+                breakDuration: state.breakDuration,
+                selectedLanguage: state.selectedLanguage
               };
     case /* SetBreakDuration */2 :
         return {
@@ -33,53 +37,21 @@ function settingsReducer(state, action) {
                 maxBreakDuration: state.maxBreakDuration,
                 minBreakDuration: state.minBreakDuration,
                 tickBreakDuration: state.tickBreakDuration,
-                breakDuration: action._0
+                breakDuration: action._0,
+                selectedLanguage: state.selectedLanguage
               };
     
   }
-}
-
-function uiReducer(state, action) {
-  switch (action.TAG | 0) {
-    case /* LoadComplete */0 :
-        var settings = action._0;
-        return {
-                breakIntervalMsg: Time$Shared.millisToString(settings.breakInterval, false, undefined, undefined, undefined),
-                breakDurationMsg: Time$Shared.millisToString(settings.breakDuration, false, undefined, undefined, undefined)
-              };
-    case /* SetBreakInterval */1 :
-        return {
-                breakIntervalMsg: Time$Shared.millisToString(action._0, false, undefined, undefined, undefined),
-                breakDurationMsg: state.breakDurationMsg
-              };
-    case /* SetBreakDuration */2 :
-        return {
-                breakIntervalMsg: state.breakIntervalMsg,
-                breakDurationMsg: Time$Shared.millisToString(action._0, false, undefined, undefined, undefined)
-              };
-    
-  }
-}
-
-function reducer(state, action) {
-  return {
-          settings: settingsReducer(state.settings, action),
-          ui: uiReducer(state.ui, action)
-        };
 }
 
 function Settings(Props) {
-  var match = React.useReducer(reducer, {
-        settings: Settings$Shared.$$default,
-        ui: {
-          breakIntervalMsg: "",
-          breakDurationMsg: ""
-        }
-      });
+  var match = React.useReducer(reducer, Settings$Shared.$$default);
   var dispatch = match[1];
-  var match$1 = match[0];
-  var ui = match$1.ui;
-  var settings = match$1.settings;
+  var settings = match[0];
+  var match$1 = Translate$Web.useTranslation(undefined);
+  var t = match$1.t;
+  var breakIntervalTime = Time$Shared.millisToTime(settings.breakInterval);
+  var breakDurationTime = Time$Shared.millisToTime(settings.breakDuration);
   React.useEffect((function () {
           var listener = Command$Web.on(function (cmd) {
                 if (typeof cmd === "number" || cmd.TAG !== /* ReturnSettings */0) {
@@ -121,7 +93,9 @@ function Settings(Props) {
                     className: "settings"
                   }, React.createElement("section", {
                         className: "settings__section"
-                      }, React.createElement("h3", undefined, "Break interval"), React.createElement("div", {
+                      }, React.createElement("h3", undefined, Curry._1(t, "SETTINGS.LANGUAGE")), React.createElement(LanguageSelector$Web.make, {})), React.createElement("section", {
+                        className: "settings__section"
+                      }, React.createElement("h3", undefined, Curry._1(t, "SETTINGS.BREAK_INTERVAL")), React.createElement("div", {
                             className: "settings__slider"
                           }, React.createElement(Slider$Web.make, {
                                 value: settings.breakInterval,
@@ -131,9 +105,12 @@ function Settings(Props) {
                                 step: settings.tickBreakInterval
                               })), React.createElement("p", {
                             className: "settings__detail"
-                          }, ui.breakIntervalMsg)), React.createElement("section", {
+                          }, React.createElement(Time$Web.make, {
+                                hours: breakIntervalTime.hours,
+                                minutes: breakIntervalTime.minutes
+                              }))), React.createElement("section", {
                         className: "settings__section"
-                      }, React.createElement("h3", undefined, "Break duration"), React.createElement("div", {
+                      }, React.createElement("h3", undefined, Curry._1(t, "SETTINGS.BREAK_DURATION")), React.createElement("div", {
                             className: "settings__slider"
                           }, React.createElement(Slider$Web.make, {
                                 value: settings.breakDuration,
@@ -143,8 +120,11 @@ function Settings(Props) {
                                 step: settings.tickBreakDuration
                               })), React.createElement("p", {
                             className: "settings__detail"
-                          }, ui.breakDurationMsg))),
-              title: "Settings",
+                          }, React.createElement(Time$Web.make, {
+                                hours: breakDurationTime.hours,
+                                minutes: breakDurationTime.minutes
+                              })))),
+              title: "SETTINGS.TITLE",
               maximize: false
             });
 }

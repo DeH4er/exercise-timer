@@ -1,11 +1,15 @@
 .window {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+}
+
+.window__titlebar {
+  position: sticky;
 }
 
 .window__content {
-  flex: 1;
+  height: calc(100vh - 32px);
+  overflow: auto;
 }
 
 .theme-dark .window {

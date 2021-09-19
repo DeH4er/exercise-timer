@@ -151,7 +151,7 @@ and scheduleBreakClose = () => {
 let openSettingsWindow = () => {
   switch appState.settingsWindow {
   | None => {
-      let window = createWindow(~width=400, ~height=250, ~startupUrl="settings", ())
+      let window = createWindow(~width=400, ~height=370, ~startupUrl="settings", ())
       appState.settingsWindow = Some(window)
     }
   | _ => ()
@@ -206,6 +206,16 @@ Command.on((event, command) => {
       appState.settings = {...settings, breakInterval: breakInterval}->Some
     })
     ->ignore
+  | ChangeLanguage(language) => {
+    appState.settings
+    ->Belt.Option.map(settings => {
+      appState.settings = {...settings, selectedLanguage: language}->Some
+      BrowserWindow.getAllWindows()
+      ->Js.Array2.map(window => LanguageChanged(language)->Command.send(window.webContents))
+    })
+    ->ignore
+  }
+  | LanguageChanged(_) => ()
   | ReturnBreakTime(_) => ()
   | ReturnSettings(_) => ()
   }

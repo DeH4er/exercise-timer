@@ -22,46 +22,10 @@ function millisToTime(millis) {
         };
 }
 
-function millisToString(millis, secondsOpt, minutesOpt, hoursOpt, param) {
-  var seconds = secondsOpt !== undefined ? secondsOpt : true;
-  var minutes = minutesOpt !== undefined ? minutesOpt : true;
-  var hours = hoursOpt !== undefined ? hoursOpt : true;
-  var time = millisToTime(millis);
-  var arr = [];
-  if (hours) {
-    arr.push([
-          time.hours,
-          "hour"
-        ]);
-  }
-  if (minutes) {
-    arr.push([
-          time.minutes,
-          "minute"
-        ]);
-  }
-  if (seconds) {
-    arr.push([
-          time.seconds,
-          "second"
-        ]);
-  }
-  return arr.filter(function (param) {
-                  return param[0] > 0;
-                }).map(function (param) {
-                var str = param[1];
-                var time = param[0];
-                return "" + time + " " + (
-                        time === 1 ? str : str + "s"
-                      );
-              }).join(" ");
-}
-
 export {
   hoursToMillis ,
   minutesToMillis ,
   millisToTime ,
-  millisToString ,
   
 }
 /* No side effect */

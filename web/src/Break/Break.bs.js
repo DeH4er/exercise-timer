@@ -2,6 +2,7 @@
 
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as React from "react";
+import * as Time$Web from "../components/Time.bs.js";
 import * as Window$Web from "../Window/Window.bs.js";
 import BreakCss from "./Break.css";
 import * as Command$Web from "../Interop/Command.bs.js";
@@ -9,35 +10,28 @@ import * as Time$Shared from "shared/src/Time.bs.js";
 import * as ProgressBar$Web from "../components/ProgressBar.bs.js";
 import * as Settings$Shared from "shared/src/Settings.bs.js";
 
-function getRemainingText(breakTime, breakDuration) {
-  return Time$Shared.millisToString(breakDuration - breakTime | 0, undefined, undefined, undefined, undefined);
-}
-
 function reducer(state, action) {
   if (action.TAG === /* SetBreakTime */0) {
-    var breakTime = action._0;
     return {
-            breakTime: breakTime,
-            settings: state.settings,
-            remainingText: getRemainingText(breakTime, state.settings.breakDuration)
+            breakTime: action._0,
+            settings: state.settings
+          };
+  } else {
+    return {
+            breakTime: state.breakTime,
+            settings: action._0
           };
   }
-  var settings = action._0;
-  return {
-          breakTime: state.breakTime,
-          settings: settings,
-          remainingText: getRemainingText(state.breakTime, settings.breakDuration)
-        };
 }
 
 function Break(Props) {
   var match = React.useReducer(reducer, {
         breakTime: 0,
-        settings: Settings$Shared.$$default,
-        remainingText: ""
+        settings: Settings$Shared.$$default
       });
   var dispatch = match[1];
   var state = match[0];
+  var remainingTime = Time$Shared.millisToTime(state.settings.breakDuration - state.breakTime | 0);
   React.useEffect((function () {
           var listener = Command$Web.on(function (cmd) {
                 if (typeof cmd === "number") {
@@ -77,7 +71,10 @@ function Break(Props) {
                                 value: state.breakTime
                               })), React.createElement("div", {
                             className: "break__remaining-text"
-                          }, state.remainingText))),
+                          }, React.createElement(Time$Web.make, {
+                                minutes: remainingTime.minutes,
+                                seconds: remainingTime.seconds
+                              })))),
               titlebar: false
             });
 }

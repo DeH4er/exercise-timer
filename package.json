@@ -46,8 +46,8 @@
     }
   },
   "devDependencies": {
-    "electron-builder": "^22.11.7",
-    "concurrently": "^6.2.1"
+    "concurrently": "^6.2.1",
+    "electron-builder": "^22.11.7"
   },
   "keywords": [],
   "author": "",
@@ -57,5 +57,9 @@
     "desktop",
     "web",
     "scripts"
-  ]
+  ],
+  "dependencies": {
+    "i18next": "^20.6.1",
+    "react-i18next": "^11.12.0"
+  }
 }

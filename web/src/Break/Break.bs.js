@@ -7,17 +7,21 @@ import * as ProgressBar$Web from "../components/ProgressBar.bs.js";
 
 function Break(Props) {
   return React.createElement(Window$Web.make, {
-              children: null,
+              children: React.createElement("div", {
+                    className: "break"
+                  }, React.createElement("div", {
+                        className: "break__title"
+                      }, "Long working sessions may affect your health. Take a break"), React.createElement("div", {
+                        className: "break__remaining"
+                      }, React.createElement("div", {
+                            className: "break__remaining-progress"
+                          }, React.createElement(ProgressBar$Web.make, {
+                                value: 55.0
+                              })), React.createElement("div", {
+                            className: "break__remaining-text"
+                          }, "29 minutes 54 seconds"))),
               titlebar: false
-            }, React.createElement("div", {
-                  className: "break__title"
-                }, "Long working sessions may affect your health. Take a break"), React.createElement("div", {
-                  className: "break__remaining-slider"
-                }, React.createElement(ProgressBar$Web.make, {
-                      value: 55.0
-                    })), React.createElement("div", {
-                  className: "break__remaning-text"
-                }, "29 minutes 54 seconds"));
+            });
 }
 
 var make = Break;

@@ -57,9 +57,5 @@
     "desktop",
     "web",
     "scripts"
-  ],
-  "dependencies": {
-    "i18next": "^20.6.1",
-    "react-i18next": "^11.12.0"
-  }
+  ]
 }

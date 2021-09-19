@@ -40,7 +40,9 @@ function $$Window(Props) {
                     onMaximize: onMaximize,
                     onClose: onClose
                   }) : React.createElement(React.Fragment, undefined), React.createElement("div", {
-                  className: "window__content"
+                  className: "window__content " + (
+                    titlebar ? "" : "window__content--no-titlebar"
+                  )
                 }, children));
 }
 

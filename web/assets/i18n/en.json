@@ -8,6 +8,7 @@
   "TIME": {
     "HOURS": "{{count}} hour",
     "HOURS_plural": "{{count}} hours",
+    "MINUTES": "{{count}} minute",
     "MINUTES_plural": "{{count}} minutes",
     "SECONDS": "{{count}} second",
     "SECONDS_plural": "{{count}} seconds"

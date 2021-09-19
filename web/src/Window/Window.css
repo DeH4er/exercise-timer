@@ -3,13 +3,13 @@
   flex-direction: column;
 }
 
-.window__titlebar {
-  position: sticky;
-}
-
 .window__content {
   height: calc(100vh - 32px);
   overflow: auto;
+}
+
+.window__content--no-titlebar {
+  height: 100vh;
 }
 
 .theme-dark .window {

@@ -16,6 +16,6 @@ let make = (
 ) => {
   <div className="window">
     {titlebar ? <Titlebar title maximize minimize close onMinimize onMaximize onClose /> : <> </>}
-    <div className="window__content"> {children} </div>
+    <div className=`window__content ${titlebar ? "" : "window__content--no-titlebar"}`> {children} </div>
   </div>
 }

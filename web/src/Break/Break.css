@@ -26,3 +26,8 @@
   margin-top: 3rem;
   text-align: center;
 }
+
+
+.theme-dark .break__remaining-text {
+  color: var(--theme-dark--light-gray1);
+}

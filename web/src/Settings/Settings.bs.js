@@ -81,7 +81,7 @@ function Settings(Props) {
   var ui = match$1.ui;
   var settings = match$1.settings;
   React.useEffect((function () {
-          Command$Web.on(function (cmd) {
+          var listener = Command$Web.on(function (cmd) {
                 if (typeof cmd === "number" || cmd.TAG !== /* ReturnSettings */0) {
                   return ;
                 } else {
@@ -92,7 +92,9 @@ function Settings(Props) {
                 }
               });
           Command$Web.send(/* GetSettings */2);
-          
+          return (function (param) {
+                    return Command$Web.removeListener(listener);
+                  });
         }), []);
   var onBreakIntervalChange = function (value) {
     Command$Web.send({

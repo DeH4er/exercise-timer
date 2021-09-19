@@ -48,14 +48,18 @@ let make = () => {
   )
 
   React.useEffect0(() => {
-    Command.on(cmd => {
+    let listener = Command.on(cmd => {
       switch cmd {
       | ReturnSettings(settings) => settings->LoadComplete->dispatch
       | _ => ()
       }
     })
+
     Shared.Command.GetSettings->Command.send
-    None
+
+    Some(() => {
+      Command.removeListener(listener)
+    })
   })
 
   let onBreakIntervalChange = value => {

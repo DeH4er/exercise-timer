@@ -1,20 +1,17 @@
 type event
+type listener = Js.Fn.arity0<unit>
 
-type ipcRenderer
+@val @scope(("electron", "ipcRenderer"))
+external _on: (string, listener) => unit = "on"
 
-@val @scope("electron")
-external ipcRenderer: ipcRenderer = "ipcRenderer"
+@val @scope(("electron", "ipcRenderer")) @variadic
+external send: (string, array<string>) => unit = "send"
 
-@send
-external _on: (ipcRenderer, string, Js.Fn.arity0<'a>) => unit = "on"
-
-@send @variadic
-external _send: (ipcRenderer, string, array<string>) => unit = "send"
-
-let on: (string, (event, array<string>) => unit) => unit = (channel, listener) => {
-  _on(ipcRenderer, channel, Shared.Utils.rest2(listener))
+let on: (string, (event, array<string>) => unit) => listener = (channel, listener) => {
+  let listener = Shared.Utils.rest2(listener)
+  _on(channel, listener)
+  listener
 }
 
-let send: (string, array<string>) => unit = (channel, args) => {
-  _send(ipcRenderer, channel, args)
-}
+@val @scope(("electron", "ipcRenderer"))
+external removeListener: (string, listener) => unit = "removeListener"

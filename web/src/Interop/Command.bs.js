@@ -3,6 +3,7 @@
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as Command$Shared from "shared/src/Command.bs.js";
 import * as IpcRenderer$Web from "./IpcRenderer.bs.js";
+import * as Caml_splice_call from "rescript/lib/es6/caml_splice_call.js";
 
 function on(listener) {
   return IpcRenderer$Web.on("main", (function (param, args) {
@@ -12,12 +13,23 @@ function on(listener) {
 }
 
 function send(command) {
-  return IpcRenderer$Web.send("main", Command$Shared.encodeCommand(command));
+  var parts = Command$Shared.encodeCommand(command);
+  Caml_splice_call.spliceApply(electron.ipcRenderer.send, [
+        "main",
+        parts
+      ]);
+  
+}
+
+function removeListener(param) {
+  electron.ipcRenderer.removeListener("main", param);
+  
 }
 
 export {
   on ,
   send ,
+  removeListener ,
   
 }
 /* No side effect */

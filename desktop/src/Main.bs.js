@@ -17,12 +17,14 @@ var appState = {
   tray: undefined,
   settingsWindow: undefined,
   breakWindows: undefined,
-  settings: undefined
+  settings: undefined,
+  breakTime: 0
 };
 
 function createWindow(width, height, x, y, startupUrl, param) {
   var $$window = Electron.BrowserWindow.create(width, height, Caml_option.some(x), Caml_option.some(y), false, {
-        preload: Path.resolve(Paths.scriptsPath, "windowPreload.js")
+        preload: Path.resolve(Paths.scriptsPath, "windowPreload.js"),
+        nativeWindowOpen: true
       }, undefined);
   var url = Paths.webPath + "#" + startupUrl;
   $$window.loadURL(url);
@@ -52,17 +54,75 @@ function exit(param) {
 }
 
 function openBreakWindows(param) {
+  appState.breakWindows = Electron$1.screen.getAllDisplays().map(function (display) {
+        var horizontalPadding = display.bounds.width * 0.1;
+        var verticalPadding = display.bounds.height * 0.1;
+        return createWindow(display.bounds.width - 2.0 * horizontalPadding | 0, display.bounds.height - 2.0 * verticalPadding | 0, display.bounds.x + horizontalPadding | 0, display.bounds.y + verticalPadding | 0, "break", undefined);
+      });
+  
+}
+
+function scheduleBreak(param) {
+  Belt_Option.map(appState.settings, (function (settings) {
+          return setTimeout((function () {
+                        return startBreak(undefined);
+                      }), settings.breakInterval);
+        }));
+  
+}
+
+function startBreakTimer(param) {
+  Belt_Option.map(appState.settings, (function (settings) {
+          appState.breakTime = 0;
+          var interval = {
+            contents: undefined
+          };
+          interval.contents = Caml_option.some(setInterval((function () {
+                      appState.breakTime = appState.breakTime + 1000 | 0;
+                      Belt_Option.map(appState.breakWindows, (function (breakWindows) {
+                              return breakWindows.map(function ($$window) {
+                                          return Command.send({
+                                                      TAG: /* ReturnBreakTime */3,
+                                                      _0: appState.breakTime
+                                                    }, $$window.webContents);
+                                        });
+                            }));
+                      if (appState.breakTime >= settings.breakDuration) {
+                        Belt_Option.map(interval.contents, (function (interval) {
+                                clearInterval(interval);
+                                
+                              }));
+                        return scheduleBreakClose(undefined);
+                      }
+                      
+                    }), 1000));
+          
+        }));
+  
+}
+
+function startBreak(param) {
   var match = appState.breakWindows;
   if (match !== undefined) {
     return ;
   } else {
-    appState.breakWindows = Electron$1.screen.getAllDisplays().map(function (display) {
-          var horizontalPadding = display.bounds.width * 0.1;
-          var verticalPadding = display.bounds.height * 0.1;
-          return createWindow(display.bounds.width - 2.0 * horizontalPadding | 0, display.bounds.height - 2.0 * verticalPadding | 0, display.bounds.x + horizontalPadding | 0, display.bounds.y + verticalPadding | 0, "break", undefined);
-        });
-    return ;
+    startBreakTimer(undefined);
+    return openBreakWindows(undefined);
   }
+}
+
+function scheduleBreakClose(param) {
+  setTimeout((function () {
+          Belt_Option.map(appState.breakWindows, (function (breakWindows) {
+                  return breakWindows.map(function (prim) {
+                              prim.close();
+                              
+                            });
+                }));
+          appState.breakWindows = undefined;
+          return scheduleBreak(undefined);
+        }), 1000);
+  
 }
 
 function openSettingsWindow(param) {
@@ -80,10 +140,6 @@ function createTray(param) {
   var createdTray = new Electron$1.Tray(iconPath);
   appState.tray = Caml_option.some(createdTray);
   var menu = Electron$1.Menu.buildFromTemplate([
-        {
-          label: "Break",
-          click: openBreakWindows
-        },
         {
           label: "Settings",
           click: openSettingsWindow
@@ -134,8 +190,6 @@ Command.on(function ($$event, command) {
         }
       } else {
         switch (command.TAG | 0) {
-          case /* ReturnSettings */0 :
-              return ;
           case /* SetBreakDuration */1 :
               var breakDuration = command._0;
               Belt_Option.map(appState.settings, (function (settings) {
@@ -168,6 +222,9 @@ Command.on(function ($$event, command) {
                       
                     }));
               return ;
+          case /* ReturnSettings */0 :
+          case /* ReturnBreakTime */3 :
+              return ;
           
         }
       }
@@ -177,6 +234,7 @@ Electron$1.app.whenReady().then(function (param) {
       installDevTools(undefined);
       return loadSettings(undefined).then(function (param) {
                   createTray(undefined);
+                  scheduleBreak(undefined);
                   return Promise.resolve(undefined);
                 });
     });
@@ -191,6 +249,10 @@ export {
   loadSettings ,
   exit ,
   openBreakWindows ,
+  scheduleBreak ,
+  startBreakTimer ,
+  startBreak ,
+  scheduleBreakClose ,
   openSettingsWindow ,
   createTray ,
   installDevTools ,

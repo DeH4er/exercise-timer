@@ -44,18 +44,18 @@ function uiReducer(state, action) {
     case /* LoadComplete */0 :
         var settings = action._0;
         return {
-                breakIntervalMsg: Time$Shared.millisToString(settings.breakInterval),
-                breakDurationMsg: Time$Shared.millisToString(settings.breakDuration)
+                breakIntervalMsg: Time$Shared.millisToString(settings.breakInterval, false, undefined, undefined, undefined),
+                breakDurationMsg: Time$Shared.millisToString(settings.breakDuration, false, undefined, undefined, undefined)
               };
     case /* SetBreakInterval */1 :
         return {
-                breakIntervalMsg: Time$Shared.millisToString(action._0),
+                breakIntervalMsg: Time$Shared.millisToString(action._0, false, undefined, undefined, undefined),
                 breakDurationMsg: state.breakDurationMsg
               };
     case /* SetBreakDuration */2 :
         return {
                 breakIntervalMsg: state.breakIntervalMsg,
-                breakDurationMsg: Time$Shared.millisToString(action._0)
+                breakDurationMsg: Time$Shared.millisToString(action._0, false, undefined, undefined, undefined)
               };
     
   }

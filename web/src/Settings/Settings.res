@@ -24,11 +24,17 @@ let settingsReducer: (Shared.Settings.t, settingsAction) => Shared.Settings.t = 
 
 let uiReducer: (ui, settingsAction) => ui = (state, action) => {
   switch action {
-  | SetBreakInterval(breakInterval) => {...state, breakIntervalMsg: Shared.Time.millisToString(breakInterval)}
-  | SetBreakDuration(breakDuration) => {...state, breakDurationMsg: Shared.Time.millisToString(breakDuration)}
+  | SetBreakInterval(breakInterval) => {
+      ...state,
+      breakIntervalMsg: Shared.Time.millisToString(breakInterval, ~seconds=false, ()),
+    }
+  | SetBreakDuration(breakDuration) => {
+      ...state,
+      breakDurationMsg: Shared.Time.millisToString(breakDuration, ~seconds=false, ()),
+    }
   | LoadComplete(settings) => {
-      breakIntervalMsg: Shared.Time.millisToString(settings.breakInterval),
-      breakDurationMsg: Shared.Time.millisToString(settings.breakDuration),
+      breakIntervalMsg: Shared.Time.millisToString(settings.breakInterval, ~seconds=false, ()),
+      breakDurationMsg: Shared.Time.millisToString(settings.breakDuration, ~seconds=false, ()),
     }
   }
 }
@@ -57,9 +63,11 @@ let make = () => {
 
     Shared.Command.GetSettings->Command.send
 
-    Some(() => {
-      Command.removeListener(listener)
-    })
+    Some(
+      () => {
+        Command.removeListener(listener)
+      },
+    )
   })
 
   let onBreakIntervalChange = value => {

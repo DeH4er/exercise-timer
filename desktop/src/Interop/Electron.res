@@ -37,7 +37,7 @@ module WebContents = {
 module BrowserWindow = {
   type t = {webContents: WebContents.t}
 
-  type webPreferences = {preload: option<string>}
+  type webPreferences = {preload: option<string>, nativeWindowOpen: bool}
 
   @send
   external loadURL: (t, string) => unit = "loadURL"

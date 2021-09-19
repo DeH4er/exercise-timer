@@ -7,6 +7,23 @@ external parse: string => 'a = "parse"
 @val
 external arguments: array<'a> = "arguments"
 
+module Timer = {
+  type intervalId
+  type timeoutId
+
+  @val
+  external setInterval: (@uncurry (unit => unit), int) => intervalId = "setInterval"
+
+  @val
+  external setTimeout: (@uncurry (unit => unit), int) => timeoutId = "setTimeout"
+
+  @val
+  external clearInterval: intervalId => unit = "clearInterval"
+
+  @val
+  external clearTimeout: timeoutId => unit = "clearTimeout"
+}
+
 let rest: (array<'a> => 'b) => Js.Fn.arity0<'b> = f => {
   (. ()) => {
     let args: array<'a> = arguments

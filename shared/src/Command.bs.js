@@ -24,23 +24,29 @@ function decodeCommand(args) {
     case 2 :
         var match$1 = args[0];
         switch (match$1) {
-          case "ReturnSettings" :
+          case "ReturnBreakTime" :
               var payload = args[1];
               return {
-                      TAG: /* ReturnSettings */0,
+                      TAG: /* ReturnBreakTime */3,
                       _0: JSON.parse(payload)
                     };
-          case "SetBreakDuration" :
+          case "ReturnSettings" :
               var payload$1 = args[1];
               return {
-                      TAG: /* SetBreakDuration */1,
+                      TAG: /* ReturnSettings */0,
                       _0: JSON.parse(payload$1)
                     };
-          case "SetBreakInterval" :
+          case "SetBreakDuration" :
               var payload$2 = args[1];
               return {
-                      TAG: /* SetBreakInterval */2,
+                      TAG: /* SetBreakDuration */1,
                       _0: JSON.parse(payload$2)
+                    };
+          case "SetBreakInterval" :
+              var payload$3 = args[1];
+              return {
+                      TAG: /* SetBreakInterval */2,
+                      _0: JSON.parse(payload$3)
                     };
           default:
             return ;
@@ -75,6 +81,11 @@ function encodeCommand(command) {
       case /* SetBreakInterval */2 :
           return [
                   "SetBreakInterval",
+                  JSON.stringify(command._0)
+                ];
+      case /* ReturnBreakTime */3 :
+          return [
+                  "ReturnBreakTime",
                   JSON.stringify(command._0)
                 ];
       

@@ -9,42 +9,58 @@ function minutesToMillis(minutes) {
   return Math.imul(minutes, 60000);
 }
 
-function millisToString(ms) {
-  var seconds = ms / 1000 | 0;
+function millisToTime(millis) {
+  var seconds = millis / 1000 | 0;
   var minutes = seconds / 60 | 0;
+  var seconds$1 = seconds - Math.imul(minutes, 60) | 0;
   var hours = minutes / 60 | 0;
   var minutes$1 = minutes - Math.imul(hours, 60) | 0;
-  var minutesStr = "" + minutes$1 + " minute" + (
-    minutes$1 > 1 ? "s" : ""
-  );
-  var hoursStr = "" + hours + " hour" + (
-    hours > 1 ? "s" : ""
-  );
-  if (hours === 0 && minutes$1 === 0) {
-    throw {
-          RE_EXN_ID: "Assert_failure",
-          _1: [
-            "Time.res",
-            19,
-            14
-          ],
-          Error: new Error()
+  return {
+          seconds: seconds$1,
+          minutes: minutes$1,
+          hours: hours
         };
+}
+
+function millisToString(millis, secondsOpt, minutesOpt, hoursOpt, param) {
+  var seconds = secondsOpt !== undefined ? secondsOpt : true;
+  var minutes = minutesOpt !== undefined ? minutesOpt : true;
+  var hours = hoursOpt !== undefined ? hoursOpt : true;
+  var time = millisToTime(millis);
+  var arr = [];
+  if (hours) {
+    arr.push([
+          time.hours,
+          "hour"
+        ]);
   }
-  if (minutes$1 !== 0) {
-    if (hours !== 0) {
-      return hoursStr + " " + minutesStr;
-    } else {
-      return minutesStr;
-    }
-  } else {
-    return hoursStr;
+  if (minutes) {
+    arr.push([
+          time.minutes,
+          "minute"
+        ]);
   }
+  if (seconds) {
+    arr.push([
+          time.seconds,
+          "second"
+        ]);
+  }
+  return arr.filter(function (param) {
+                  return param[0] > 0;
+                }).map(function (param) {
+                var str = param[1];
+                var time = param[0];
+                return "" + time + " " + (
+                        time === 1 ? str : str + "s"
+                      );
+              }).join(" ");
 }
 
 export {
   hoursToMillis ,
   minutesToMillis ,
+  millisToTime ,
   millisToString ,
   
 }

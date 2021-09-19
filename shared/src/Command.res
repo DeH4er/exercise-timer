@@ -5,6 +5,7 @@ type t =
   | ReturnSettings(Settings.t)
   | SetBreakDuration(int)
   | SetBreakInterval(int)
+  | ReturnBreakTime(int)
 
 let decodeCommand: array<string> => option<t> = args => {
   switch args {
@@ -14,6 +15,7 @@ let decodeCommand: array<string> => option<t> = args => {
   | ["GetSettings"] => GetSettings->Some
   | ["SetBreakDuration", payload] => payload->Utils.parse->SetBreakDuration->Some
   | ["SetBreakInterval", payload] => payload->Utils.parse->SetBreakInterval->Some
+  | ["ReturnBreakTime", payload] => payload->Utils.parse->ReturnBreakTime->Some
   | _ => None
   }
 }
@@ -26,5 +28,6 @@ let encodeCommand: t => array<string> = command => {
   | GetSettings => ["GetSettings"]
   | SetBreakDuration(payload) => ["SetBreakDuration", payload->Utils.stringify]
   | SetBreakInterval(payload) => ["SetBreakInterval", payload->Utils.stringify]
+  | ReturnBreakTime(payload) => ["ReturnBreakTime", payload->Utils.stringify]
   }
 }

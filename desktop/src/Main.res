@@ -6,6 +6,7 @@ type appState = {
   mutable settingsWindow: option<BrowserWindow.t>,
   mutable breakWindows: option<array<BrowserWindow.t>>,
   mutable settings: option<Shared.Settings.t>,
+  mutable breakTime: int,
 }
 
 let appState = {
@@ -13,6 +14,7 @@ let appState = {
   settingsWindow: None,
   settings: None,
   breakWindows: None,
+  breakTime: 0,
 }
 
 let createWindow = (
@@ -31,6 +33,7 @@ let createWindow = (
     ~frame=false,
     ~webPreferences={
       preload: Some(Node.Path.resolve([Paths.scriptsPath, "windowPreload.js"])),
+      nativeWindowOpen: true,
     },
     (),
   )
@@ -69,27 +72,80 @@ let exit = () => {
 }
 
 let openBreakWindows = () => {
+  appState.breakWindows =
+    Screen.getAllDisplays()
+    ->Js.Array2.map(display => {
+      let paddingFraction = 0.1
+      let horizontalPadding = display.bounds.width *. paddingFraction
+      let verticalPadding = display.bounds.height *. paddingFraction
+
+      createWindow(
+        ~width=(display.bounds.width -. 2.0 *. horizontalPadding)->Belt.Float.toInt,
+        ~height=(display.bounds.height -. 2.0 *. verticalPadding)->Belt.Float.toInt,
+        ~x=(display.bounds.x +. horizontalPadding)->Belt.Float.toInt,
+        ~y=(display.bounds.y +. verticalPadding)->Belt.Float.toInt,
+        ~startupUrl="break",
+        (),
+      )
+    })
+    ->Some
+}
+
+let rec scheduleBreak = () => {
+  appState.settings
+  ->Belt.Option.map(settings => {
+    Shared.Utils.Timer.setTimeout(() => {
+      startBreak()
+    }, settings.breakInterval)
+  })
+  ->ignore
+}
+and startBreakTimer = () => {
+  appState.settings
+  ->Belt.Option.map(settings => {
+    appState.breakTime = 0
+
+    let interval = ref(None)
+
+    interval.contents = Shared.Utils.Timer.setInterval(() => {
+        appState.breakTime = appState.breakTime + 1000
+
+        appState.breakWindows
+        ->Belt.Option.map(breakWindows =>
+          breakWindows->Js.Array2.map(window =>
+            appState.breakTime->ReturnBreakTime->Command.send(window.webContents)
+          )
+        )
+        ->ignore
+
+        if appState.breakTime >= settings.breakDuration {
+          interval.contents
+          ->Belt.Option.map(interval => interval->Shared.Utils.Timer.clearInterval)
+          ->ignore
+
+          scheduleBreakClose()
+        }
+      }, 1000)->Some
+  })
+  ->ignore
+}
+and startBreak = () => {
   switch appState.breakWindows {
   | None =>
-    appState.breakWindows =
-      Screen.getAllDisplays()
-      ->Js.Array2.map(display => {
-        let paddingFraction = 0.1
-        let horizontalPadding = display.bounds.width *. paddingFraction
-        let verticalPadding = display.bounds.height *. paddingFraction
-
-        createWindow(
-          ~width=(display.bounds.width -. 2.0 *. horizontalPadding)->Belt.Float.toInt,
-          ~height=(display.bounds.height -. 2.0 *. verticalPadding)->Belt.Float.toInt,
-          ~x=(display.bounds.x +. horizontalPadding)->Belt.Float.toInt,
-          ~y=(display.bounds.y +. verticalPadding)->Belt.Float.toInt,
-          ~startupUrl="break",
-          (),
-        )
-      })
-      ->Some
+    startBreakTimer()
+    openBreakWindows()
   | _ => ()
   }
+}
+and scheduleBreakClose = () => {
+  Shared.Utils.Timer.setTimeout(() => {
+    appState.breakWindows
+    ->Belt.Option.map(breakWindows => breakWindows->Js.Array2.map(BrowserWindow.close))
+    ->ignore
+
+    appState.breakWindows = None
+    scheduleBreak()
+  }, 1000)->ignore
 }
 
 let openSettingsWindow = () => {
@@ -107,7 +163,6 @@ let createTray = () => {
   let createdTray = Tray.create(iconPath)
   appState.tray = Some(createdTray)
   let menu = Menu.create([
-    {label: "Break", click: openBreakWindows},
     {label: "Settings", click: openSettingsWindow},
     {label: "Exit", click: exit},
   ])
@@ -151,6 +206,7 @@ Command.on((event, command) => {
       appState.settings = {...settings, breakInterval: breakInterval}->Some
     })
     ->ignore
+  | ReturnBreakTime(_) => ()
   | ReturnSettings(_) => ()
   }
 })
@@ -160,6 +216,7 @@ App.whenReady()
   installDevTools()
   loadSettings()->then(() => {
     createTray()
+    scheduleBreak()
     resolve()
   })
 })

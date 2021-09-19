@@ -4,6 +4,8 @@ import * as Curry from "rescript/lib/es6/curry.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as Caml_array from "rescript/lib/es6/caml_array.js";
 
+var Timer = {};
+
 function rest(f) {
   return function () {
     return Curry._1(f, arguments);
@@ -20,6 +22,7 @@ function rest2(f) {
 }
 
 export {
+  Timer ,
   rest ,
   rest2 ,
   

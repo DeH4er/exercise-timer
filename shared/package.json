@@ -5,6 +5,9 @@
   "scripts": {
     "compile": "rescript build -w"
   },
+  "dependencies": {
+    "rescript-jzon": "^1.2.0"
+  },
   "devDependencies": {
     "rescript": "^9.1.4"
   },

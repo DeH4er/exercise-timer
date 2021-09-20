@@ -3,6 +3,7 @@
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as Caml_array from "rescript/lib/es6/caml_array.js";
+import * as Caml_option from "rescript/lib/es6/caml_option.js";
 
 var Timer = {};
 
@@ -21,10 +22,19 @@ function rest2(f) {
   };
 }
 
+function resultToOption(res) {
+  if (res.TAG === /* Ok */0) {
+    return Caml_option.some(res._0);
+  }
+  console.log(res._0);
+  
+}
+
 export {
   Timer ,
   rest ,
   rest2 ,
+  resultToOption ,
   
 }
 /* No side effect */

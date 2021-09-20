@@ -1,6 +1,4 @@
-type i18n = {
-  language: string
-}
+type i18n = {language: string}
 type i18nExtension
 
 @module("i18next")
@@ -44,7 +42,7 @@ let useTranslation = () => {
 external _changeLanguage: (i18n, string) => unit = "changeLanguage"
 
 let changeLanguage: (i18n, Shared.Language.t) => unit = (i18n, language) => {
-  _changeLanguage(i18n, language->Shared.Language.toString)
+  _changeLanguage(i18n, language->Shared.Language.Serializable.toString)
 }
 
 let init = () => {
@@ -67,13 +65,14 @@ let init = () => {
   })
 }
 
-let listenChange = () => {
+let listenChange: unit => unit = () => {
   Command.on(cmd => {
     switch cmd {
-      | LanguageChanged(language) => {
-        i18n->changeLanguage(language)
-      }
-      | _ => ()
+    | ReturnSettings(settings) => i18n->changeLanguage(settings.selectedLanguage)
+    | LanguageChanged(language) => i18n->changeLanguage(language)
+    | _ => ()
     }
-  })
+  })->ignore
+
+  GetSettings->Command.send
 }

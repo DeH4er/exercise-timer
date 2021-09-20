@@ -14,5 +14,5 @@
   ],
   "suffix": ".bs.js",
   "pinned-dependencies": ["shared"],
-  "bs-dependencies": ["@ryyppy/rescript-promise", "shared"]
+  "bs-dependencies": ["@ryyppy/rescript-promise", "rescript-jzon", "shared"]
 }

@@ -25,7 +25,7 @@ function useTranslation(param) {
 }
 
 function changeLanguage(i18n, language) {
-  i18n.changeLanguage(Language$Shared.toString(language));
+  i18n.changeLanguage(Language$Shared.Serializable.toString(language));
   
 }
 
@@ -48,13 +48,20 @@ function init(param) {
 }
 
 function listenChange(param) {
-  return Command$Web.on(function (cmd) {
-              if (typeof cmd === "number" || cmd.TAG !== /* LanguageChanged */5) {
-                return ;
-              } else {
-                return changeLanguage(I18next, cmd._0);
-              }
-            });
+  Command$Web.on(function (cmd) {
+        if (typeof cmd === "number") {
+          return ;
+        }
+        switch (cmd.TAG | 0) {
+          case /* ReturnSettings */0 :
+              return changeLanguage(I18next, cmd._0.selectedLanguage);
+          case /* LanguageChanged */5 :
+              return changeLanguage(I18next, cmd._0);
+          default:
+            return ;
+        }
+      });
+  return Command$Web.send(/* GetSettings */2);
 }
 
 export {

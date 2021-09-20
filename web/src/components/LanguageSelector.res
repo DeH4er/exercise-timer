@@ -14,10 +14,11 @@ let make = () => {
     {
       supportedLanguages
       ->Js.Array2.map(language => {
-        let languageStr = Shared.Language.toString(language)
+        let languageStr = Shared.Language.Serializable.toString(language)
         let isSelected = i18n.language == languageStr
         <div
             className=`language-selector__language ${isSelected ? "language-selector__language--selected" : ""}`
+            key={languageStr}
             onClick={_ => language->selectLanguage}>
           {`LANGUAGE.${languageStr->Js.String.toUpperCase}`->t1({"lng": languageStr})->React.string}
         </div>

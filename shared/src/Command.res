@@ -9,33 +9,65 @@ type t =
   | ChangeLanguage(Language.t)
   | LanguageChanged(Language.t)
 
-let decodeCommand: array<string> => option<t> = args => {
-  switch args {
-  | ["CloseWindow"] => CloseWindow->Some
-  | ["MinimizeWindow"] => MinimizeWindow->Some
-  | ["ReturnSettings", payload] => payload->Utils.parse->ReturnSettings->Some
-  | ["GetSettings"] => GetSettings->Some
-  | ["SetBreakDuration", payload] => payload->Utils.parse->SetBreakDuration->Some
-  | ["SetBreakInterval", payload] => payload->Utils.parse->SetBreakInterval->Some
-  | ["ReturnBreakTime", payload] => payload->Utils.parse->ReturnBreakTime->Some
-  | ["ChangeLanguage", payload] =>
-    payload->Language.fromString->Belt.Option.map(language => language->ChangeLanguage)
-  | ["LanguageChanged", payload] =>
-    payload->Language.fromString->Belt.Option.map(language => language->LanguageChanged)
-  | _ => None
-  }
+module Codec = {
+  type t = t
+
+  let int = Jzon.object1(i => i, i => i->Ok, Jzon.field("int", Jzon.int))
+  let language = Jzon.object1(language => language, language => language->Ok, Jzon.field("language", Language.Codec.default))
+  let emptyObject = Js.Json.object_(Js.Dict.empty())
+
+  let default = Jzon.object2(
+    shape => {
+      switch shape {
+      | CloseWindow => ("CloseWindow", emptyObject)
+      | MinimizeWindow => ("MinimizeWindow", emptyObject)
+      | GetSettings => ("GetSettings", emptyObject)
+      | ReturnSettings(payload) => (
+          "ReturnSettings",
+          payload->Jzon.encodeWith(Settings.Codec.default),
+        )
+      | SetBreakDuration(payload) => ("SetBreakDuration", payload->Jzon.encodeWith(int))
+      | SetBreakInterval(payload) => ("SetBreakInterval", payload->Jzon.encodeWith(int))
+      | ReturnBreakTime(payload) => ("ReturnBreakTime", payload->Jzon.encodeWith(int))
+      | ChangeLanguage(payload) => (
+          "ChangeLanguage",
+          payload->Jzon.encodeWith(language),
+        )
+      | LanguageChanged(payload) => (
+          "LanguageChanged",
+          payload->Jzon.encodeWith(language),
+        )
+      }
+    },
+    ((kind, json)) => {
+      switch kind {
+      | "CloseWindow" => CloseWindow->Ok
+      | "MinimizeWindow" => MinimizeWindow->Ok
+      | "GetSettings" => GetSettings->Ok
+      | "ReturnSettings" =>
+        json
+        ->Jzon.decodeWith(Settings.Codec.default)
+        ->Belt.Result.map(decoded => decoded->ReturnSettings)
+      | "SetBreakDuration" =>
+        json->Jzon.decodeWith(int)->Belt.Result.map(decoded => decoded->SetBreakDuration)
+      | "SetBreakInterval" =>
+        json->Jzon.decodeWith(int)->Belt.Result.map(decoded => decoded->SetBreakInterval)
+      | "ReturnBreakTime" =>
+        json->Jzon.decodeWith(int)->Belt.Result.map(decoded => decoded->ReturnBreakTime)
+      | "ChangeLanguage" =>
+        json
+        ->Jzon.decodeWith(language)
+        ->Belt.Result.map(decoded => decoded->ChangeLanguage)
+      | "LanguageChanged" =>
+        json
+        ->Jzon.decodeWith(language)
+        ->Belt.Result.map(decoded => decoded->LanguageChanged)
+      | kind => Error(#UnexpectedJsonValue([Field("kind")], kind))
+      }
+    },
+    Jzon.field("kind", Jzon.string),
+    Jzon.self,
+  )
 }
 
-let encodeCommand: t => array<string> = command => {
-  switch command {
-  | CloseWindow => ["CloseWindow"]
-  | MinimizeWindow => ["MinimizeWindow"]
-  | ReturnSettings(payload) => ["ReturnSettings", payload->Utils.stringify]
-  | GetSettings => ["GetSettings"]
-  | SetBreakDuration(payload) => ["SetBreakDuration", payload->Utils.stringify]
-  | SetBreakInterval(payload) => ["SetBreakInterval", payload->Utils.stringify]
-  | ReturnBreakTime(payload) => ["ReturnBreakTime", payload->Utils.stringify]
-  | ChangeLanguage(payload) => ["ChangeLanguage", payload->Language.toString]
-  | LanguageChanged(payload) => ["LanguageChanged", payload->Language.toString]
-  }
-}
+module Serializable = Serializable.MakeSerializable(Codec)

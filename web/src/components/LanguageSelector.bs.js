@@ -14,9 +14,10 @@ function LanguageSelector(Props) {
   return React.createElement("div", {
               className: "language-selector"
             }, Language$Shared.supportedLanguages.map(function (language) {
-                  var languageStr = Language$Shared.toString(language);
+                  var languageStr = Language$Shared.Serializable.toString(language);
                   var isSelected = i18n.language === languageStr;
                   return React.createElement("div", {
+                              key: languageStr,
                               className: "language-selector__language " + (
                                 isSelected ? "language-selector__language--selected" : ""
                               ),

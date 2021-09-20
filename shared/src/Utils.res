@@ -1,9 +1,3 @@
-@val @scope("JSON")
-external stringify: 'a => string = "stringify"
-
-@val @scope("JSON")
-external parse: string => 'a = "parse"
-
 @val
 external arguments: array<'a> = "arguments"
 
@@ -37,5 +31,15 @@ let rest2: (('a, array<'b>) => 'c) => Js.Fn.arity0<'c> = f => {
     let arg0: 'a = args[0]
     let rest: array<'b> = args->Belt.Array.slice(~offset=1, ~len=args->Js.Array2.length)
     f(arg0, rest)
+  }
+}
+
+let resultToOption: result<'a, 'b> => option<'a> = res => {
+  switch res {
+  | Ok(res) => Some(res)
+  | Error(err) => {
+      Js.log(err)
+      None
+    }
   }
 }

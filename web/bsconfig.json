@@ -18,5 +18,5 @@
     "react-jsx": 3
   },
   "pinned-dependencies": ["shared"],
-  "bs-dependencies": ["@ryyppy/rescript-promise", "@rescript/react", "shared"]
+  "bs-dependencies": ["@ryyppy/rescript-promise", "@rescript/react", "shared", "rescript-jzon"]
 }

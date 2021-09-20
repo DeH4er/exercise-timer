@@ -4,11 +4,14 @@ import * as Curry from "rescript/lib/es6/curry.js";
 import * as Electron from "./Interop/Electron.bs.js";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as Command$Shared from "shared/src/Command.bs.js";
-import * as Caml_splice_call from "rescript/lib/es6/caml_splice_call.js";
 
 function on(listener) {
   return Electron.IpcMain.on("main", (function ($$event, args) {
-                Belt_Option.map(Command$Shared.decodeCommand(args), (function (cmd) {
+                if (args.length !== 1) {
+                  return ;
+                }
+                var cmd = args[0];
+                Belt_Option.map(Curry._1(Command$Shared.Serializable.fromString, cmd), (function (cmd) {
                         return Curry._2(listener, $$event, cmd);
                       }));
                 
@@ -16,18 +19,12 @@ function on(listener) {
 }
 
 function send(command, webContents) {
-  Caml_splice_call.spliceObjApply(webContents, "send", [
-        "main",
-        Command$Shared.encodeCommand(command)
-      ]);
+  webContents.send("main", Curry._1(Command$Shared.Serializable.toString, command));
   
 }
 
 function reply($$event, command) {
-  Caml_splice_call.spliceObjApply($$event, "reply", [
-        "main",
-        Command$Shared.encodeCommand(command)
-      ]);
+  $$event.reply("main", Curry._1(Command$Shared.Serializable.toString, command));
   
 }
 

@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "compile": "rescript build -w -with-deps",
+    "compile": "rescript build",
+    "compile-watch": "rescript build -w",
     "gen-icons": "node src/GenIcons.bs.js"
   },
   "dependencies": {

@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "compile": "rescript build -w"
+    "compile": "rescript build",
+    "compile-watch": "rescript build -w"
   },
   "dependencies": {
     "rescript-jzon": "^1.2.0"

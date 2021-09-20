@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "compile": "rescript build -w -with-deps",
+    "compile": "rescript build -with-deps",
+    "compile-watch": "rescript build -w -with-deps",
     "build-watch": "cross-env NODE_ENV=development webpack serve --hot",
     "build": "cross-env NODE_ENV=production webpack"
   },

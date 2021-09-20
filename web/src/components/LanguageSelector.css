@@ -25,3 +25,7 @@
 .theme-dark .language-selector__language--selected {
   background: var(--theme-dark--accent);
 }
+
+.theme-dark .language-selector__language--selected:hover {
+  background: var(--theme-dark--accent);
+}

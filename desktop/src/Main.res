@@ -26,16 +26,19 @@ let createWindow = (
   (),
 ) => {
   let window = BrowserWindow.create(
-    ~width,
-    ~height,
-    ~x,
-    ~y,
-    ~frame=false,
-    ~webPreferences={
-      preload: Some(Node.Path.resolve([Paths.scriptsPath, "windowPreload.js"])),
-      nativeWindowOpen: true,
-    },
-    (),
+    BrowserWindow.createProps(
+      ~width,
+      ~height,
+      ~x,
+      ~y,
+      ~frame=false->Some,
+      ~webPreferences=BrowserWindow.webPreferencesProps(
+        ~preload=Node.Path.resolve([Paths.scriptsPath, "windowPreload.js"]),
+        ~nativeWindowOpen=true,
+        (),
+      )->Some,
+      (),
+    ),
   )
   let url = `${Paths.webPath}#${startupUrl}`
   window->BrowserWindow.loadURL(url)
@@ -163,8 +166,8 @@ let createTray = () => {
   let createdTray = Tray.create(iconPath)
   appState.tray = Some(createdTray)
   let menu = Menu.create([
-    {label: "Settings", click: openSettingsWindow},
-    {label: "Exit", click: exit},
+    Menu.menuItemProps(~label="Settings", ~click=openSettingsWindow, ()),
+    Menu.menuItemProps(~label="Exit", ~click=exit, ()),
   ])
   Tray.setContextMenu(createdTray, menu)
 }
@@ -206,15 +209,15 @@ Command.on((event, command) => {
       appState.settings = {...settings, breakInterval: breakInterval}->Some
     })
     ->ignore
-  | ChangeLanguage(language) => {
+  | ChangeLanguage(language) =>
     appState.settings
     ->Belt.Option.map(settings => {
       appState.settings = {...settings, selectedLanguage: language}->Some
-      BrowserWindow.getAllWindows()
-      ->Js.Array2.map(window => LanguageChanged(language)->Command.send(window.webContents))
+      BrowserWindow.getAllWindows()->Js.Array2.map(window =>
+        LanguageChanged(language)->Command.send(window.webContents)
+      )
     })
     ->ignore
-  }
   | LanguageChanged(_) => ()
   | ReturnBreakTime(_) => ()
   | ReturnSettings(_) => ()

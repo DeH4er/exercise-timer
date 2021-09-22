@@ -13,20 +13,7 @@ var App = {
 
 var WebContents = {};
 
-function create(width, height, x, y, frame, webPreferences, param) {
-  return new Electron.BrowserWindow({
-              width: width,
-              height: height,
-              x: x,
-              y: y,
-              frame: frame,
-              webPreferences: webPreferences
-            });
-}
-
-var BrowserWindow = {
-  create: create
-};
+var BrowserWindow = {};
 
 var Menu = {};
 

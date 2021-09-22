@@ -37,8 +37,6 @@ module WebContents = {
 module BrowserWindow = {
   type t = {webContents: WebContents.t}
 
-  type webPreferences = {preload: option<string>, nativeWindowOpen: bool}
-
   @send
   external loadURL: (t, string) => unit = "loadURL"
 
@@ -48,26 +46,29 @@ module BrowserWindow = {
   @send
   external minimize: t => unit = "minimize"
 
-  @new @module("electron")
-  external _create: 'a => t = "BrowserWindow"
+  type createProps
+  type webPreferences
 
-  let create: (
+  @obj
+  external webPreferencesProps: (
+    ~preload: string=?,
+    ~nativeWindowOpen: bool=?,
+    unit,
+  ) => webPreferences = ""
+
+  @obj
+  external createProps: (
     ~width: int,
     ~height: int,
     ~x: option<int>=?,
     ~y: option<int>=?,
-    ~frame: bool=?,
-    ~webPreferences: webPreferences=?,
+    ~frame: option<bool>=?,
+    ~webPreferences: option<webPreferences>=?,
     unit,
-  ) => t = (~width, ~height, ~x=?, ~y=?, ~frame=?, ~webPreferences=?, ()) =>
-    _create({
-      "width": width,
-      "height": height,
-      "x": x,
-      "y": y,
-      "frame": frame,
-      "webPreferences": webPreferences,
-    })
+  ) => createProps = ""
+
+  @new @module("electron")
+  external create: createProps => t = "BrowserWindow"
 
   @module("electron") @scope("BrowserWindow")
   external fromWebContents: WebContents.t => t = "fromWebContents"
@@ -79,10 +80,10 @@ module BrowserWindow = {
 module Menu = {
   type t
 
-  type menuItem = {
-    label: string,
-    click: unit => unit,
-  }
+  type menuItem
+
+  @obj
+  external menuItemProps: (~label: string=?, ~click: unit => unit=?, unit) => menuItem = ""
 
   @module("electron") @scope("Menu")
   external create: array<menuItem> => t = "buildFromTemplate"

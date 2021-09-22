@@ -4,9 +4,8 @@ import * as Path from "path";
 import * as Paths from "./Paths.bs.js";
 import * as Command from "./Command.bs.js";
 import * as Caml_obj from "rescript/lib/es6/caml_obj.js";
-import * as Electron from "./Interop/Electron.bs.js";
 import * as Settings from "./Settings.bs.js";
-import * as Electron$1 from "electron";
+import * as Electron from "electron";
 import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as Settings$Shared from "shared/src/Settings.bs.js";
@@ -22,13 +21,20 @@ var appState = {
 };
 
 function createWindow(width, height, x, y, startupUrl, param) {
-  var $$window = Electron.BrowserWindow.create(width, height, Caml_option.some(x), Caml_option.some(y), false, {
-        preload: Path.resolve(Paths.scriptsPath, "windowPreload.js"),
-        nativeWindowOpen: true
-      }, undefined);
+  var $$window = new Electron.BrowserWindow({
+        width: width,
+        height: height,
+        x: x,
+        y: y,
+        frame: false,
+        webPreferences: {
+          preload: Path.resolve(Paths.scriptsPath, "windowPreload.js"),
+          nativeWindowOpen: true
+        }
+      });
   var url = Paths.webPath + "#" + startupUrl;
   $$window.loadURL(url);
-  if (!Electron$1.app.isPackaged) {
+  if (!Electron.app.isPackaged) {
     $$window.webContents.openDevTools();
   }
   return $$window;
@@ -46,7 +52,7 @@ function loadSettings(param) {
 function exit(param) {
   Belt_Option.map(appState.settings, (function (settings) {
           return Settings.save(settings).then(function (param) {
-                      Electron$1.app.quit();
+                      Electron.app.quit();
                       return Promise.resolve(undefined);
                     });
         }));
@@ -54,7 +60,7 @@ function exit(param) {
 }
 
 function openBreakWindows(param) {
-  appState.breakWindows = Electron$1.screen.getAllDisplays().map(function (display) {
+  appState.breakWindows = Electron.screen.getAllDisplays().map(function (display) {
         var horizontalPadding = display.bounds.width * 0.1;
         var verticalPadding = display.bounds.height * 0.1;
         return createWindow(display.bounds.width - 2.0 * horizontalPadding | 0, display.bounds.height - 2.0 * verticalPadding | 0, display.bounds.x + horizontalPadding | 0, display.bounds.y + verticalPadding | 0, "break", undefined);
@@ -137,9 +143,9 @@ function openSettingsWindow(param) {
 
 function createTray(param) {
   var iconPath = Path.resolve(Paths.imgPath, "icon.png");
-  var createdTray = new Electron$1.Tray(iconPath);
+  var createdTray = new Electron.Tray(iconPath);
   appState.tray = Caml_option.some(createdTray);
-  var menu = Electron$1.Menu.buildFromTemplate([
+  var menu = Electron.Menu.buildFromTemplate([
         {
           label: "Settings",
           click: openSettingsWindow
@@ -154,7 +160,7 @@ function createTray(param) {
 }
 
 function installDevTools(param) {
-  if (!Electron$1.app.isPackaged) {
+  if (!Electron.app.isPackaged) {
     ElectronDevtoolsInstaller$1(ElectronDevtoolsInstaller.REACT_DEVELOPER_TOOLS);
     return ;
   }
@@ -162,7 +168,7 @@ function installDevTools(param) {
 }
 
 Command.on(function ($$event, command) {
-      var $$window = Electron$1.BrowserWindow.fromWebContents($$event.sender);
+      var $$window = Electron.BrowserWindow.fromWebContents($$event.sender);
       if (typeof command === "number") {
         switch (command) {
           case /* CloseWindow */0 :
@@ -238,7 +244,7 @@ Command.on(function ($$event, command) {
                         breakDuration: settings.breakDuration,
                         selectedLanguage: language
                       };
-                      return Electron$1.BrowserWindow.getAllWindows().map(function ($$window) {
+                      return Electron.BrowserWindow.getAllWindows().map(function ($$window) {
                                   return Command.send({
                                               TAG: /* LanguageChanged */5,
                                               _0: language
@@ -252,7 +258,7 @@ Command.on(function ($$event, command) {
       }
     });
 
-Electron$1.app.whenReady().then(function (param) {
+Electron.app.whenReady().then(function (param) {
       installDevTools(undefined);
       return loadSettings(undefined).then(function (param) {
                   createTray(undefined);
@@ -261,7 +267,7 @@ Electron$1.app.whenReady().then(function (param) {
                 });
     });
 
-Electron$1.app.on("window-all-closed", (function (prim) {
+Electron.app.on("window-all-closed", (function (prim) {
         
       }));
 

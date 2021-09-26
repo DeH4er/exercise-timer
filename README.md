@@ -34,7 +34,7 @@ Currently, this repo doesn't have a compiled installer. But you may make an inst
 ### How to run
 
 ```bash
-npm run compile
+npm run compile-watch
 npm run build-watch
 npm start
 ```

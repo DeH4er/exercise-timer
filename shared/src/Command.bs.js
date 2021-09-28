@@ -44,6 +44,11 @@ var $$default = Jzon.object2((function (shape) {
                         "GetSettings",
                         emptyObject
                       ];
+            case /* GetTip */3 :
+                return [
+                        "GetTip",
+                        emptyObject
+                      ];
             
           }
         } else {
@@ -68,12 +73,17 @@ var $$default = Jzon.object2((function (shape) {
                         "ReturnBreakTime",
                         Jzon.encodeWith(shape._0, $$int)
                       ];
-            case /* ChangeLanguage */4 :
+            case /* ReturnTip */4 :
+                return [
+                        "ReturnTip",
+                        Jzon.encodeWith(shape._0, $$int)
+                      ];
+            case /* ChangeLanguage */5 :
                 return [
                         "ChangeLanguage",
                         Jzon.encodeWith(shape._0, language)
                       ];
-            case /* LanguageChanged */5 :
+            case /* LanguageChanged */6 :
                 return [
                         "LanguageChanged",
                         Jzon.encodeWith(shape._0, language)
@@ -88,7 +98,7 @@ var $$default = Jzon.object2((function (shape) {
           case "ChangeLanguage" :
               return Belt_Result.map(Jzon.decodeWith(json, language), (function (decoded) {
                             return {
-                                    TAG: /* ChangeLanguage */4,
+                                    TAG: /* ChangeLanguage */5,
                                     _0: decoded
                                   };
                           }));
@@ -102,10 +112,15 @@ var $$default = Jzon.object2((function (shape) {
                       TAG: /* Ok */0,
                       _0: /* GetSettings */2
                     };
+          case "GetTip" :
+              return {
+                      TAG: /* Ok */0,
+                      _0: /* GetTip */3
+                    };
           case "LanguageChanged" :
               return Belt_Result.map(Jzon.decodeWith(json, language), (function (decoded) {
                             return {
-                                    TAG: /* LanguageChanged */5,
+                                    TAG: /* LanguageChanged */6,
                                     _0: decoded
                                   };
                           }));
@@ -125,6 +140,13 @@ var $$default = Jzon.object2((function (shape) {
               return Belt_Result.map(Jzon.decodeWith(json, Settings$Shared.Codec.$$default), (function (decoded) {
                             return {
                                     TAG: /* ReturnSettings */0,
+                                    _0: decoded
+                                  };
+                          }));
+          case "ReturnTip" :
+              return Belt_Result.map(Jzon.decodeWith(json, $$int), (function (decoded) {
+                            return {
+                                    TAG: /* ReturnTip */4,
                                     _0: decoded
                                   };
                           }));

@@ -4,6 +4,7 @@ import * as Path from "path";
 import * as Curry from "rescript/lib/es6/curry.js";
 import * as Paths from "./Paths.bs.js";
 import * as Command from "./Command.bs.js";
+import * as Js_math from "rescript/lib/es6/js_math.js";
 import * as Caml_obj from "rescript/lib/es6/caml_obj.js";
 import * as Electron from "./Interop/Electron.bs.js";
 import * as Settings from "./Settings.bs.js";
@@ -19,7 +20,8 @@ var appState = {
   settingsWindow: undefined,
   breakWindows: undefined,
   settings: undefined,
-  breakTime: 0
+  breakTime: 0,
+  tip: 0
 };
 
 function createWindow(createProps, startupUrl, param) {
@@ -62,6 +64,7 @@ function exit(param) {
 }
 
 function openBreakWindows(param) {
+  appState.tip = Js_math.random_int(0, 3);
   appState.breakWindows = Electron$1.screen.getAllDisplays().map(function (display) {
         var horizontalPadding = display.bounds.width * 0.1;
         var verticalPadding = display.bounds.height * 0.1;
@@ -204,6 +207,11 @@ Command.on(function ($$event, command) {
                                 }, $$event.sender);
                     }));
               return ;
+          case /* GetTip */3 :
+              return Command.send({
+                          TAG: /* ReturnTip */4,
+                          _0: appState.tip
+                        }, $$event.sender);
           
         }
       } else {
@@ -242,7 +250,7 @@ Command.on(function ($$event, command) {
                       
                     }));
               return ;
-          case /* ChangeLanguage */4 :
+          case /* ChangeLanguage */5 :
               var language = command._0;
               Belt_Option.map(appState.settings, (function (settings) {
                       appState.settings = {
@@ -258,7 +266,7 @@ Command.on(function ($$event, command) {
                       };
                       return Electron$1.BrowserWindow.getAllWindows().map(function ($$window) {
                                   return Command.send({
-                                              TAG: /* LanguageChanged */5,
+                                              TAG: /* LanguageChanged */6,
                                               _0: language
                                             }, $$window.webContents);
                                 });
@@ -283,8 +291,11 @@ Electron$1.app.on("window-all-closed", (function (prim) {
         
       }));
 
+var countOfTips = 3;
+
 export {
   appState ,
+  countOfTips ,
   createWindow ,
   loadSettings ,
   exit ,

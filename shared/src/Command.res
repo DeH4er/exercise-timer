@@ -6,6 +6,8 @@ type t =
   | SetBreakDuration(int)
   | SetBreakInterval(int)
   | ReturnBreakTime(int)
+  | GetTip
+  | ReturnTip(int)
   | ChangeLanguage(Language.t)
   | LanguageChanged(Language.t)
 
@@ -13,7 +15,11 @@ module Codec = {
   type t = t
 
   let int = Jzon.object1(i => i, i => i->Ok, Jzon.field("int", Jzon.int))
-  let language = Jzon.object1(language => language, language => language->Ok, Jzon.field("language", Language.Codec.default))
+  let language = Jzon.object1(
+    language => language,
+    language => language->Ok,
+    Jzon.field("language", Language.Codec.default),
+  )
   let emptyObject = Js.Json.object_(Js.Dict.empty())
 
   let default = Jzon.object2(
@@ -29,14 +35,10 @@ module Codec = {
       | SetBreakDuration(payload) => ("SetBreakDuration", payload->Jzon.encodeWith(int))
       | SetBreakInterval(payload) => ("SetBreakInterval", payload->Jzon.encodeWith(int))
       | ReturnBreakTime(payload) => ("ReturnBreakTime", payload->Jzon.encodeWith(int))
-      | ChangeLanguage(payload) => (
-          "ChangeLanguage",
-          payload->Jzon.encodeWith(language),
-        )
-      | LanguageChanged(payload) => (
-          "LanguageChanged",
-          payload->Jzon.encodeWith(language),
-        )
+      | ReturnTip(payload) => ("ReturnTip", payload->Jzon.encodeWith(int))
+      | GetTip => ("GetTip", emptyObject)
+      | ChangeLanguage(payload) => ("ChangeLanguage", payload->Jzon.encodeWith(language))
+      | LanguageChanged(payload) => ("LanguageChanged", payload->Jzon.encodeWith(language))
       }
     },
     ((kind, json)) => {
@@ -54,14 +56,12 @@ module Codec = {
         json->Jzon.decodeWith(int)->Belt.Result.map(decoded => decoded->SetBreakInterval)
       | "ReturnBreakTime" =>
         json->Jzon.decodeWith(int)->Belt.Result.map(decoded => decoded->ReturnBreakTime)
+      | "GetTip" => GetTip->Ok
+      | "ReturnTip" => json->Jzon.decodeWith(int)->Belt.Result.map(decoded => decoded->ReturnTip)
       | "ChangeLanguage" =>
-        json
-        ->Jzon.decodeWith(language)
-        ->Belt.Result.map(decoded => decoded->ChangeLanguage)
+        json->Jzon.decodeWith(language)->Belt.Result.map(decoded => decoded->ChangeLanguage)
       | "LanguageChanged" =>
-        json
-        ->Jzon.decodeWith(language)
-        ->Belt.Result.map(decoded => decoded->LanguageChanged)
+        json->Jzon.decodeWith(language)->Belt.Result.map(decoded => decoded->LanguageChanged)
       | kind => Error(#UnexpectedJsonValue([Field("kind")], kind))
       }
     },

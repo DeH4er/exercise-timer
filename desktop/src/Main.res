@@ -7,6 +7,7 @@ type appState = {
   mutable breakWindows: option<array<BrowserWindow.t>>,
   mutable settings: option<Shared.Settings.t>,
   mutable breakTime: int,
+  mutable tip: int,
 }
 
 let appState = {
@@ -15,7 +16,10 @@ let appState = {
   settings: None,
   breakWindows: None,
   breakTime: 0,
+  tip: 0,
 }
+
+let countOfTips = 3
 
 let createWindow: (BrowserWindow.CreateProps.t, ~startupUrl: string, unit) => BrowserWindow.t = (
   createProps,
@@ -71,6 +75,8 @@ let exit = () => {
 }
 
 let openBreakWindows = () => {
+  appState.tip = Js.Math.random_int(0, countOfTips)
+
   appState.breakWindows =
     Screen.getAllDisplays()
     ->Js.Array2.map(display => {
@@ -112,24 +118,24 @@ and startBreakTimer = () => {
     let interval = ref(None)
 
     interval.contents = Shared.Utils.Timer.setInterval(() => {
-      appState.breakTime = appState.breakTime + 1000
+        appState.breakTime = appState.breakTime + 1000
 
-      appState.breakWindows
-      ->Belt.Option.map(breakWindows =>
-        breakWindows->Js.Array2.map(window =>
-          appState.breakTime->ReturnBreakTime->Command.send(window.webContents)
+        appState.breakWindows
+        ->Belt.Option.map(breakWindows =>
+          breakWindows->Js.Array2.map(window =>
+            appState.breakTime->ReturnBreakTime->Command.send(window.webContents)
+          )
         )
-      )
-      ->ignore
-
-      if appState.breakTime >= settings.breakDuration {
-        interval.contents
-        ->Belt.Option.map(interval => interval->Shared.Utils.Timer.clearInterval)
         ->ignore
 
-        scheduleBreakClose()
-      }
-    }, 1000)->Some
+        if appState.breakTime >= settings.breakDuration {
+          interval.contents
+          ->Belt.Option.map(interval => interval->Shared.Utils.Timer.clearInterval)
+          ->ignore
+
+          scheduleBreakClose()
+        }
+      }, 1000)->Some
   })
   ->ignore
 }
@@ -223,9 +229,11 @@ Command.on((event, command) => {
       )
     })
     ->ignore
+  | GetTip => appState.tip->ReturnTip->Command.send(event.sender)
   | LanguageChanged(_) => ()
   | ReturnBreakTime(_) => ()
   | ReturnSettings(_) => ()
+  | ReturnTip(_) => ()
   }
 })
 

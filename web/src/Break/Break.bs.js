@@ -7,30 +7,43 @@ import * as Window$Web from "../Window/Window.bs.js";
 import BreakCss from "./Break.css";
 import * as Command$Web from "../Interop/Command.bs.js";
 import * as Time$Shared from "shared/src/Time.bs.js";
+import * as Translate$Web from "../Translate/Translate.bs.js";
 import * as ProgressBar$Web from "../components/ProgressBar.bs.js";
 import * as Settings$Shared from "shared/src/Settings.bs.js";
 
 function reducer(state, action) {
-  if (action.TAG === /* SetBreakTime */0) {
-    return {
-            breakTime: action._0,
-            settings: state.settings
-          };
-  } else {
-    return {
-            breakTime: state.breakTime,
-            settings: action._0
-          };
+  switch (action.TAG | 0) {
+    case /* SetBreakTime */0 :
+        return {
+                breakTime: action._0,
+                tip: state.tip,
+                settings: state.settings
+              };
+    case /* SetSettings */1 :
+        return {
+                breakTime: state.breakTime,
+                tip: state.tip,
+                settings: action._0
+              };
+    case /* SetTip */2 :
+        return {
+                breakTime: state.breakTime,
+                tip: action._0,
+                settings: state.settings
+              };
+    
   }
 }
 
 function Break(Props) {
-  var match = React.useReducer(reducer, {
+  var match = Translate$Web.useTranslation(undefined);
+  var match$1 = React.useReducer(reducer, {
         breakTime: 0,
+        tip: 0,
         settings: Settings$Shared.$$default
       });
-  var dispatch = match[1];
-  var state = match[0];
+  var dispatch = match$1[1];
+  var state = match$1[0];
   var remainingTime = Time$Shared.millisToTime(state.settings.breakDuration - state.breakTime | 0);
   React.useEffect((function () {
           var listener = Command$Web.on(function (cmd) {
@@ -48,11 +61,17 @@ function Break(Props) {
                                   TAG: /* SetBreakTime */0,
                                   _0: cmd._0
                                 });
+                  case /* ReturnTip */4 :
+                      return Curry._1(dispatch, {
+                                  TAG: /* SetTip */2,
+                                  _0: cmd._0
+                                });
                   default:
                     return ;
                 }
               });
           Command$Web.send(/* GetSettings */2);
+          Command$Web.send(/* GetTip */3);
           return (function (param) {
                     return Command$Web.removeListener(listener);
                   });
@@ -62,7 +81,7 @@ function Break(Props) {
                     className: "break"
                   }, React.createElement("div", {
                         className: "break__title"
-                      }, "Long working sessions may affect your health. Take a break"), React.createElement("div", {
+                      }, Curry._1(match.t, "TIP." + state.tip.toString())), React.createElement("div", {
                         className: "break__remaining"
                       }, React.createElement("div", {
                             className: "break__remaining-progress"

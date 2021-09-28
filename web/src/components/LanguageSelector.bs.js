@@ -23,7 +23,7 @@ function LanguageSelector(Props) {
                               ),
                               onClick: (function (param) {
                                   return Command$Web.send({
-                                              TAG: /* ChangeLanguage */4,
+                                              TAG: /* ChangeLanguage */5,
                                               _0: language
                                             });
                                 })

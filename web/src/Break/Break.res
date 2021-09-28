@@ -3,16 +3,21 @@ external styles: {..} = "default"
 
 type state = {
   breakTime: int,
+  tip: int,
   settings: Shared.Settings.t,
 }
 
-type action = SetBreakTime(int) | SetSettings(Shared.Settings.t)
+type action = SetBreakTime(int) | SetSettings(Shared.Settings.t) | SetTip(int)
 
 let reducer: (state, action) => state = (state, action) => {
   switch action {
   | SetBreakTime(breakTime) => {
       ...state,
       breakTime: breakTime,
+    }
+  | SetTip(tip) => {
+      ...state,
+      tip: tip,
     }
   | SetSettings(settings) => {
       ...state,
@@ -23,9 +28,11 @@ let reducer: (state, action) => state = (state, action) => {
 
 @react.component
 let make = () => {
+  let {t} = Translate.useTranslation()
+
   let (state, dispatch) = React.useReducer(
     reducer,
-    {breakTime: 0, settings: Shared.Settings.default},
+    {breakTime: 0, tip: 0, settings: Shared.Settings.default},
   )
 
   let remainingTime = (state.settings.breakDuration - state.breakTime)->Shared.Time.millisToTime
@@ -35,11 +42,13 @@ let make = () => {
       switch cmd {
       | ReturnBreakTime(breakTime) => breakTime->SetBreakTime->dispatch
       | ReturnSettings(settings) => settings->SetSettings->dispatch
+      | ReturnTip(tip) => tip->SetTip->dispatch
       | _ => ()
       }
     })
 
     GetSettings->Command.send
+    GetTip->Command.send
 
     Some(
       () => {
@@ -51,7 +60,7 @@ let make = () => {
   <Window titlebar=false>
     <div className="break">
       <div className="break__title">
-        {"Long working sessions may affect your health. Take a break"->React.string}
+        {`TIP.${state.tip->Js.Int.toString}`->t->React.string}
       </div>
       <div className="break__remaining">
         <div className="break__remaining-progress">

@@ -13,6 +13,11 @@
     "SECONDS": "{{count}} second",
     "SECONDS_plural": "{{count}} seconds"
   },
+  "TIP": {
+    "0": "Long working sessions may affect your health. Take a brake",
+    "1": "Give your eyes a break from computer",
+    "2": "RSI is a thing! Keep your arms and wrists ache-free"
+  },
   "LANGUAGE": {
     "EN": "English",
     "RU": "Russian"

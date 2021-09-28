@@ -55,7 +55,7 @@ function listenChange(param) {
         switch (cmd.TAG | 0) {
           case /* ReturnSettings */0 :
               return changeLanguage(I18next, cmd._0.selectedLanguage);
-          case /* LanguageChanged */5 :
+          case /* LanguageChanged */6 :
               return changeLanguage(I18next, cmd._0);
           default:
             return ;

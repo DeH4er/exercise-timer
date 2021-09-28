@@ -84,6 +84,8 @@ let openBreakWindows = () => {
           ~height=(display.bounds.height -. 2.0 *. verticalPadding)->Belt.Float.toInt,
           ~x=(display.bounds.x +. horizontalPadding)->Belt.Float.toInt,
           ~y=(display.bounds.y +. verticalPadding)->Belt.Float.toInt,
+          ~alwaysOnTop=true,
+          ~skipTaskbar=true,
           (),
         ),
         ~startupUrl="break",
@@ -110,24 +112,24 @@ and startBreakTimer = () => {
     let interval = ref(None)
 
     interval.contents = Shared.Utils.Timer.setInterval(() => {
-        appState.breakTime = appState.breakTime + 1000
+      appState.breakTime = appState.breakTime + 1000
 
-        appState.breakWindows
-        ->Belt.Option.map(breakWindows =>
-          breakWindows->Js.Array2.map(window =>
-            appState.breakTime->ReturnBreakTime->Command.send(window.webContents)
-          )
+      appState.breakWindows
+      ->Belt.Option.map(breakWindows =>
+        breakWindows->Js.Array2.map(window =>
+          appState.breakTime->ReturnBreakTime->Command.send(window.webContents)
         )
+      )
+      ->ignore
+
+      if appState.breakTime >= settings.breakDuration {
+        interval.contents
+        ->Belt.Option.map(interval => interval->Shared.Utils.Timer.clearInterval)
         ->ignore
 
-        if appState.breakTime >= settings.breakDuration {
-          interval.contents
-          ->Belt.Option.map(interval => interval->Shared.Utils.Timer.clearInterval)
-          ->ignore
-
-          scheduleBreakClose()
-        }
-      }, 1000)->Some
+        scheduleBreakClose()
+      }
+    }, 1000)->Some
   })
   ->ignore
 }

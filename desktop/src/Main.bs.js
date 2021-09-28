@@ -69,7 +69,9 @@ function openBreakWindows(param) {
                     width: display.bounds.width - 2.0 * horizontalPadding | 0,
                     height: display.bounds.height - 2.0 * verticalPadding | 0,
                     x: display.bounds.x + horizontalPadding | 0,
-                    y: display.bounds.y + verticalPadding | 0
+                    y: display.bounds.y + verticalPadding | 0,
+                    skipTaskbar: true,
+                    alwaysOnTop: true
                   }, "break", undefined);
       });
   

@@ -17,29 +17,25 @@ let appState = {
   breakTime: 0,
 }
 
-let createWindow = (
-  ~width: int,
-  ~height: int,
-  ~x: option<int>=?,
-  ~y: option<int>=?,
+let createWindow: (BrowserWindow.CreateProps.t, ~startupUrl: string, unit) => BrowserWindow.t = (
+  createProps,
   ~startupUrl: string,
   (),
 ) => {
-  let window = BrowserWindow.create(
-    BrowserWindow.createProps(
-      ~width,
-      ~height,
-      ~x,
-      ~y,
-      ~frame=false->Some,
-      ~webPreferences=BrowserWindow.webPreferencesProps(
-        ~preload=Node.Path.resolve([Paths.scriptsPath, "windowPreload.js"]),
-        ~nativeWindowOpen=true,
-        (),
-      )->Some,
+  let defaultProps = BrowserWindow.CreateProps.create(
+    ~frame=false,
+    ~webPreferences=BrowserWindow.WebPreferencesProps.create(
+      ~preload=Node.Path.resolve([Paths.scriptsPath, "windowPreload.js"]),
+      ~nativeWindowOpen=true,
       (),
     ),
+    (),
   )
+
+  let window = BrowserWindow.create(
+    BrowserWindow.CreatePropsUtils.merge([defaultProps, createProps]),
+  )
+
   let url = `${Paths.webPath}#${startupUrl}`
   window->BrowserWindow.loadURL(url)
 
@@ -83,10 +79,13 @@ let openBreakWindows = () => {
       let verticalPadding = display.bounds.height *. paddingFraction
 
       createWindow(
-        ~width=(display.bounds.width -. 2.0 *. horizontalPadding)->Belt.Float.toInt,
-        ~height=(display.bounds.height -. 2.0 *. verticalPadding)->Belt.Float.toInt,
-        ~x=(display.bounds.x +. horizontalPadding)->Belt.Float.toInt,
-        ~y=(display.bounds.y +. verticalPadding)->Belt.Float.toInt,
+        BrowserWindow.CreateProps.create(
+          ~width=(display.bounds.width -. 2.0 *. horizontalPadding)->Belt.Float.toInt,
+          ~height=(display.bounds.height -. 2.0 *. verticalPadding)->Belt.Float.toInt,
+          ~x=(display.bounds.x +. horizontalPadding)->Belt.Float.toInt,
+          ~y=(display.bounds.y +. verticalPadding)->Belt.Float.toInt,
+          (),
+        ),
         ~startupUrl="break",
         (),
       )
@@ -154,7 +153,11 @@ and scheduleBreakClose = () => {
 let openSettingsWindow = () => {
   switch appState.settingsWindow {
   | None => {
-      let window = createWindow(~width=400, ~height=370, ~startupUrl="settings", ())
+      let window = createWindow(
+        BrowserWindow.CreateProps.create(~width=400, ~height=370, ()),
+        ~startupUrl="settings",
+        (),
+      )
       appState.settingsWindow = Some(window)
     }
   | _ => ()
@@ -166,8 +169,8 @@ let createTray = () => {
   let createdTray = Tray.create(iconPath)
   appState.tray = Some(createdTray)
   let menu = Menu.create([
-    Menu.menuItemProps(~label="Settings", ~click=openSettingsWindow, ()),
-    Menu.menuItemProps(~label="Exit", ~click=exit, ()),
+    Menu.CreateProps.create(~label="Settings", ~click=openSettingsWindow, ()),
+    Menu.CreateProps.create(~label="Exit", ~click=exit, ()),
   ])
   Tray.setContextMenu(createdTray, menu)
 }

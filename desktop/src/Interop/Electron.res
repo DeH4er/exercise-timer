@@ -46,29 +46,36 @@ module BrowserWindow = {
   @send
   external minimize: t => unit = "minimize"
 
-  type createProps
-  type webPreferences
+  module WebPreferencesProps = {
+    type t
 
-  @obj
-  external webPreferencesProps: (
-    ~preload: string=?,
-    ~nativeWindowOpen: bool=?,
-    unit,
-  ) => webPreferences = ""
+    @obj
+    external create: (~preload: string=?, ~nativeWindowOpen: bool=?, unit) => t = ""
+  }
 
-  @obj
-  external createProps: (
-    ~width: int,
-    ~height: int,
-    ~x: option<int>=?,
-    ~y: option<int>=?,
-    ~frame: option<bool>=?,
-    ~webPreferences: option<webPreferences>=?,
-    unit,
-  ) => createProps = ""
+  module WebPreferencesPropsUtils = Shared.Props.MakePropsUtils(WebPreferencesProps)
+
+  module CreateProps = {
+    type t
+
+    @obj
+    external create: (
+      ~width: int=?,
+      ~height: int=?,
+      ~x: int=?,
+      ~y: int=?,
+      ~frame: bool=?,
+      ~webPreferences: WebPreferencesProps.t=?,
+      ~skipTaskbar: bool=?,
+      ~alwaysOnTop: bool=?,
+      unit,
+    ) => t = ""
+  }
+
+  module CreatePropsUtils = Shared.Props.MakePropsUtils(CreateProps)
 
   @new @module("electron")
-  external create: createProps => t = "BrowserWindow"
+  external create: CreateProps.t => t = "BrowserWindow"
 
   @module("electron") @scope("BrowserWindow")
   external fromWebContents: WebContents.t => t = "fromWebContents"
@@ -80,13 +87,17 @@ module BrowserWindow = {
 module Menu = {
   type t
 
-  type menuItem
+  module CreateProps = {
+    type t
 
-  @obj
-  external menuItemProps: (~label: string=?, ~click: unit => unit=?, unit) => menuItem = ""
+    @obj
+    external create: (~label: string=?, ~click: unit => unit=?, unit) => t = ""
+  }
+
+  module CreatePropsUtils = Shared.Props.MakePropsUtils(CreateProps)
 
   @module("electron") @scope("Menu")
-  external create: array<menuItem> => t = "buildFromTemplate"
+  external create: array<CreateProps.t> => t = "buildFromTemplate"
 }
 
 module Tray = {

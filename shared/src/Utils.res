@@ -43,3 +43,9 @@ let resultToOption: result<'a, 'b> => option<'a> = res => {
     }
   }
 }
+
+@val @scope("Object") @variadic
+external assign: array<{..}> => {..} = "assign"
+
+let mergeObjects: array<{..}> => {..} = objects =>
+  assign(Js.Array2.concat([Js.Obj.empty()], objects))

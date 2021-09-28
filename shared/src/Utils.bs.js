@@ -4,6 +4,7 @@ import * as Curry from "rescript/lib/es6/curry.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as Caml_array from "rescript/lib/es6/caml_array.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
+import * as Caml_splice_call from "rescript/lib/es6/caml_splice_call.js";
 
 var Timer = {};
 
@@ -30,11 +31,16 @@ function resultToOption(res) {
   
 }
 
+function mergeObjects(objects) {
+  return Caml_splice_call.spliceApply(Object.assign, [[{}].concat(objects)]);
+}
+
 export {
   Timer ,
   rest ,
   rest2 ,
   resultToOption ,
+  mergeObjects ,
   
 }
 /* No side effect */

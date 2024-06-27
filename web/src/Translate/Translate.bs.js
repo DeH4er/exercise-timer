@@ -5,11 +5,11 @@ import * as Command$Web from "../Interop/Command.bs.js";
 import * as ReactI18next from "react-i18next";
 import * as Language$Shared from "shared/src/Language.bs.js";
 import EnJson from "../../assets/i18n/en.json";
-import RuJson from "../../assets/i18n/ru.json";
+import UaJson from "../../assets/i18n/ua.json";
 
 var enTranslations = EnJson;
 
-var ruTranslations = RuJson;
+var uaTranslations = UaJson;
 
 function useTranslation(param) {
   var res = ReactI18next.useTranslation();
@@ -35,8 +35,8 @@ function init(param) {
                 en: {
                   translation: enTranslations
                 },
-                ru: {
-                  translation: ruTranslations
+                ua: {
+                  translation: uaTranslations
                 }
               },
               lng: "en",
@@ -66,7 +66,7 @@ function listenChange(param) {
 
 export {
   enTranslations ,
-  ruTranslations ,
+  uaTranslations ,
   useTranslation ,
   changeLanguage ,
   init ,

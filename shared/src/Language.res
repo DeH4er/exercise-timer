@@ -1,6 +1,6 @@
-type t = Ru | En
+type t = Ua | En
 
-let supportedLanguages: array<t> = [En, Ru]
+let supportedLanguages: array<t> = [En, Ua]
 
 module Codec = {
   type t = t
@@ -8,7 +8,7 @@ module Codec = {
   let default: Jzon.codec<t> = Jzon.custom(
     language => {
       switch language {
-      | Ru => "ru"
+      | Ua => "ua"
       | En => "en"
       }->Jzon.encodeWith(Jzon.string)
     },
@@ -17,7 +17,7 @@ module Codec = {
       ->Jzon.decodeWith(Jzon.string)
       ->Belt.Result.flatMap(language =>
        switch language {
-        | "ru" => Ru->Ok
+        | "ua" => Ua->Ok
         | "en" => En->Ok
         | lng => Error(#SyntaxError(`Invalid language ${lng}`))
       })
@@ -29,12 +29,12 @@ module Serializable = {
   type t = t
 
   let toString: t => string = language => switch language {
-    | Ru => "ru"
+    | Ua "ua"
     | En => "en"
   }
 
   let fromString: string => option<t> = languageStr => switch languageStr {
-    | "ru" => Ru -> Some
+    | "ua" => Ua -> Some
     | "en" => En -> Some
     | lng => {
       Js.log(`${lng} is invalid language`)

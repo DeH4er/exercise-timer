@@ -16,8 +16,8 @@ external initReactI18next: i18nExtension = "initReactI18next"
 @module("../../assets/i18n/en.json")
 external enTranslations: {..} = "default"
 
-@module("../../assets/i18n/ru.json")
-external ruTranslations: {..} = "default"
+@module("../../assets/i18n/ua.json")
+external uaTranslations: {..} = "default"
 
 type useTranslationRecord<'a> = {
   t: string => string,
@@ -53,8 +53,8 @@ let init = () => {
       "en": {
         "translation": enTranslations,
       },
-      "ru": {
-        "translation": ruTranslations,
+      "ua": {
+        "translation": uaTranslations,
       },
     },
     "lng": "en",

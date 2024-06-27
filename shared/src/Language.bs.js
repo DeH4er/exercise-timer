@@ -5,11 +5,11 @@ import * as Belt_Result from "rescript/lib/es6/belt_Result.js";
 
 var supportedLanguages = [
   /* En */1,
-  /* Ru */0
+  /* Ua */0
 ];
 
 var $$default = Jzon.custom((function (language) {
-        return Jzon.encodeWith(language ? "en" : "ru", Jzon.string);
+        return Jzon.encodeWith(language ? "en" : "ua", Jzon.string);
       }), (function (languageStr) {
         return Belt_Result.flatMap(Jzon.decodeWith(languageStr, Jzon.string), (function (language) {
                       switch (language) {
@@ -18,10 +18,10 @@ var $$default = Jzon.custom((function (language) {
                                     TAG: /* Ok */0,
                                     _0: /* En */1
                                   };
-                        case "ru" :
+                        case "ua" :
                             return {
                                     TAG: /* Ok */0,
-                                    _0: /* Ru */0
+                                    _0: /* Ua */0
                                   };
                         default:
                           return {
@@ -43,7 +43,7 @@ function toString(language) {
   if (language) {
     return "en";
   } else {
-    return "ru";
+    return "ua";
   }
 }
 
@@ -51,8 +51,8 @@ function fromString(languageStr) {
   switch (languageStr) {
     case "en" :
         return /* En */1;
-    case "ru" :
-        return /* Ru */0;
+    case "ua" :
+        return /* Ua */0;
     default:
       console.log(languageStr + " is invalid language");
       return ;

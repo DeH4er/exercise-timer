@@ -23,7 +23,7 @@ You may want to stretch or exercise during this time. When your break is finishe
 ### Settings
 You can adjust your break timings under settings
 
-![Settings Window](https://raw.githubusercontent.com/DeH4er/exercise-timer/main/.github/settings-window.png)
+![Settings Window](https://raw.githubusercontent.com/DeH4er/exercise-timer/main/.github/settings-window_.png)
 
 # <a name="how-to-install"></a>How to install
 
